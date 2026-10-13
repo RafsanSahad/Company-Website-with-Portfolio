@@ -52,6 +52,7 @@ window.SITE = {
   nav: [
     { label: "Services", href: "#services" },
     { label: "Work", href: "#work" },
+    { label: "Reviews", href: "#reviews" },
     { label: "Process", href: "#process" },
     { label: "About", href: "#about" },
     { label: "Contact", href: "#contact" }

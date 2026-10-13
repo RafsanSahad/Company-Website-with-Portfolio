@@ -49,7 +49,9 @@ PDFs open in an embedded viewer in the project modal. PPTX files get a download 
 
 ### Add a testimonial
 
-Replace the placeholder entry in `SITE.testimonials`. Remove `placeholder: true` and set a real `name`, `quote`, and optional `role`. Entries with `placeholder: true` are not rendered. If none are real, the whole Testimonials section stays hidden.
+The company homepage's Client reviews section displays real entries from `SITE.testimonials`, or prefers `SITE.fiverrReviews` when that array contains published reviews. Replace the placeholder entry with an authentic `name` and `quote`, remove `placeholder: true`, and optionally supply `role` and a `rating` between 1 and 5. Only include feedback you have permission to publish. Blank and placeholder reviews are not rendered, and no rating is assumed when one is missing.
+
+Until real quotes are supplied, the section displays a styled link to the public Fiverr profile instead of invented testimonials. The profile URL comes from `SITE.links.fiverr`. This is a display-only section; it does not scrape reviews or collect visitor submissions.
 
 ### Add a certificate
 

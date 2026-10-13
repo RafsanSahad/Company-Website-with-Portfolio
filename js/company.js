@@ -456,80 +456,47 @@
     });
   }
 
-  function renderTestimonials() {
-    var section = document.getElementById("testimonials");
-    var track = document.getElementById("testimonials-track");
-    var dots = document.getElementById("testimonial-dots");
-    var prev = document.getElementById("testimonial-prev");
-    var next = document.getElementById("testimonial-next");
+  function renderReviews() {
+    var section = document.getElementById("reviews");
+    var grid = document.getElementById("reviews-grid");
+    var empty = document.getElementById("reviews-empty");
+    var source = document.getElementById("reviews-source");
+    if (!section || !grid || !empty || !source) return;
 
-    // prefer explicit fiverrReviews (to avoid scraping). SITE.fiverrReviews should be an array of {name, role, quote, rating}
-    var reviews = (SITE.fiverrReviews || []).filter(function (r) {
-      return r && r.quote && r.name;
-    });
-
-    // fallback to SITE.testimonials
-    if (!reviews.length) {
-      reviews = (SITE.testimonials || []).filter(function (t) {
-        return isReal(t) && t.quote && t.name;
-      });
+    function isPublishedReview(review) {
+      return isReal(review) && typeof review.name === "string" && review.name.trim() && typeof review.quote === "string" && review.quote.trim();
     }
 
-    if (!section) return;
+    var reviews = (SITE.fiverrReviews || []).filter(isPublishedReview);
+    if (!reviews.length) reviews = (SITE.testimonials || []).filter(isPublishedReview);
+    section.querySelectorAll("[data-review-profile]").forEach(function (link) {
+      if (SITE.links.fiverr) link.href = SITE.links.fiverr;
+    });
+    grid.replaceChildren();
+    grid.hidden = reviews.length === 0;
+    empty.hidden = reviews.length > 0;
+    source.hidden = reviews.length === 0;
 
-    if (!reviews.length) {
-      // no reviews available — show a subtle CTA linking to Fiverr
-      var trust = document.getElementById('trust-bar');
-      if (trust) {
-        var cta = el('div', 'review-cta');
-        cta.innerHTML = '<p>See reviews on <a href="' + SITE.links.fiverr + '" target="_blank" rel="noopener noreferrer">Fiverr</a>.</p>' +
-          '<p>If you want reviews shown here, add a <code>SITE.fiverrReviews</code> array in <code>data/content.js</code> with review objects.</p>';
-        trust.parentNode.insertBefore(cta, trust.nextSibling);
+    reviews.forEach(function (review) {
+      var card = el("figure", "client-review-card");
+      var rating = Number(review.rating);
+      if (typeof review.rating === "number" && Number.isFinite(rating) && rating >= 1 && rating <= 5) {
+        var score = el("p", "client-review-rating", rating + " / 5");
+        score.setAttribute("aria-label", "Rated " + rating + " out of 5");
+        card.appendChild(score);
       }
-      return;
-    }
-
-    section.hidden = false;
-    if (prev) prev.innerHTML = svg.chevronL;
-    if (next) next.innerHTML = svg.chevronR;
-
-    var index = 0;
-    function show(i) {
-      index = (i + reviews.length) % reviews.length;
-      var t = reviews[index];
-      track.replaceChildren();
-      var article = el("blockquote", "testimonial");
-      article.appendChild(el("q", "", t.quote));
-      var foot = el("footer", "", t.name + (t.role ? " — " + t.role : ""));
-      article.appendChild(foot);
-      if (t.rating) {
-        var rating = el('div', 'rating');
-        rating.textContent = '★'.repeat(Math.max(0, Math.min(5, Math.round(t.rating)))) + ' (' + t.rating + ')';
-        article.appendChild(rating);
-      }
-      track.appendChild(article);
-      dots.querySelectorAll("button").forEach(function (d, di) {
-        d.setAttribute("aria-current", di === index ? "true" : "false");
-      });
-    }
-
-    dots.replaceChildren();
-    reviews.forEach(function (_, i) {
-      var d = el("button");
-      d.type = "button";
-      d.setAttribute("aria-label", "Show testimonial " + (i + 1));
-      d.addEventListener("click", function () {
-        show(i);
-      });
-      dots.appendChild(d);
+      card.appendChild(el("blockquote", "client-review-quote", review.quote.trim()));
+      var author = el("figcaption", "client-review-author");
+      var initial = el("span", "client-review-initial", Array.from(review.name.trim())[0].toUpperCase());
+      initial.setAttribute("aria-hidden", "true");
+      author.appendChild(initial);
+      var identity = el("div", "client-review-identity");
+      identity.appendChild(el("strong", "", review.name.trim()));
+      if (review.role) identity.appendChild(el("span", "", review.role));
+      author.appendChild(identity);
+      card.appendChild(author);
+      grid.appendChild(card);
     });
-    if (prev) prev.addEventListener("click", function () { show(index - 1); });
-    if (next) next.addEventListener("click", function () { show(index + 1); });
-    section.addEventListener("keydown", function (e) {
-      if (e.key === "ArrowLeft") show(index - 1);
-      if (e.key === "ArrowRight") show(index + 1);
-    });
-    show(0);
   }
 
   function renderCertificates() {
@@ -796,7 +763,7 @@
     renderFeaturedWork();
     initModal();
     renderTrust();
-    renderTestimonials();
+    renderReviews();
     renderCertificates();
     renderProcess();
     renderAbout();

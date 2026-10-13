@@ -119,9 +119,15 @@
     <section class="section section-alt" id="work" aria-labelledby="work-title">
       <div class="wrap">
         <h2 id="work-title">Work</h2>
-        <p class="section-intro">Selected public work. Case files with PDFs or decks can be attached per project.</p>
-        <div class="filters" id="work-filters" role="tablist" aria-label="Project filters"></div>
+        <p class="section-intro">Explore public projects across animation, video, and software. Open a project for details and original work.</p>
+        <div class="work-toolbar">
+          <div class="filters" id="work-filters" role="group" aria-label="Project filters"></div>
+          <p class="work-status" id="work-status" role="status" aria-live="polite" aria-atomic="true"></p>
+        </div>
         <div class="card-grid work-grid" id="work-grid"></div>
+        <div class="view-all-control" id="view-all-control" hidden>
+          <button type="button" class="btn btn-outline" id="work-toggle" aria-controls="work-grid" aria-expanded="false">View all projects</button>
+        </div>
       </div>
     </section>
 
@@ -243,7 +249,7 @@
     <section class="section section-alt" id="featured" aria-labelledby="featured-title">
       <div class="wrap">
         <h2 id="featured-title">Featured Work</h2>
-        <p class="section-intro">A shuffled selection from GitHub and studio work.</p>
+        <p class="section-intro">A closer look at selected motion, character design, and public code.</p>
         <div class="card-grid featured-grid" id="featured-grid"></div>
       </div>
     </section>

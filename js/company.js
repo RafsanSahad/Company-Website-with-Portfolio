@@ -172,8 +172,8 @@
     var modal = document.getElementById("project-modal");
     var title = document.getElementById("modal-title");
     var body = document.getElementById("modal-body");
-    var dialog = modal.querySelector(".modal-dialog");
     if (!modal || !title || !body) return;
+    var dialog = modal.querySelector(".modal-dialog");
 
     modalState.lastFocus = document.activeElement;
     title.textContent = project.title;
@@ -282,7 +282,10 @@
         if (!nodes.length) return;
         var first = nodes[0];
         var last = nodes[nodes.length - 1];
-        if (e.shiftKey && document.activeElement === first) {
+        if (nodes.indexOf(document.activeElement) === -1) {
+          e.preventDefault();
+          (e.shiftKey ? last : first).focus();
+        } else if (e.shiftKey && document.activeElement === first) {
           e.preventDefault();
           last.focus();
         } else if (!e.shiftKey && document.activeElement === last) {
@@ -293,90 +296,139 @@
     });
   }
 
+  function createProjectCard(project) {
+    var category = SITE.projectFilters.find(function (filter) {
+      return filter.id === project.category;
+    });
+    var card = el("article", "work-card");
+    var preview = el("div", "work-thumb");
+    preview.setAttribute("aria-hidden", "true");
+
+    function showFallback() {
+      preview.replaceChildren();
+      preview.classList.add("work-thumb-fallback");
+      var icon = el("span", "work-thumb-icon");
+      icon.innerHTML = serviceIcons[project.category] || svg.spark;
+      preview.appendChild(icon);
+      preview.appendChild(el("span", "work-thumb-label", category ? category.label : "Studio work"));
+    }
+
+    if (project.thumbnail) {
+      var image = document.createElement("img");
+      image.src = project.thumbnail;
+      image.alt = "";
+      image.width = 640;
+      image.height = 360;
+      image.loading = "lazy";
+      image.addEventListener("error", showFallback, { once: true });
+      preview.appendChild(image);
+    } else {
+      showFallback();
+    }
+
+    card.appendChild(preview);
+    var body = el("div", "work-card-body");
+    body.appendChild(el("p", "meta", category ? category.label : "Studio work"));
+    body.appendChild(el("h3", "", project.title));
+    body.appendChild(el("p", "work-description", project.description));
+    var button = el("button", "project-open", "View project");
+    button.type = "button";
+    button.setAttribute("aria-label", "View project: " + project.title);
+    button.setAttribute("aria-haspopup", "dialog");
+    button.appendChild(el("span", "", "↗"));
+    button.lastChild.setAttribute("aria-hidden", "true");
+    button.addEventListener("click", function () {
+      openModal(project);
+    });
+    body.appendChild(button);
+    card.appendChild(body);
+    return card;
+  }
+
+  function renderFeaturedWork() {
+    var grid = document.getElementById("featured-grid");
+    var section = document.getElementById("featured");
+    if (!grid || !section) return;
+    var projects = (SITE.projects || []).filter(function (project) {
+      return isReal(project) && project.featured;
+    });
+    section.hidden = projects.length === 0;
+    grid.replaceChildren();
+    projects.forEach(function (project) {
+      grid.appendChild(createProjectCard(project));
+    });
+  }
+
   function renderWork() {
     var filters = document.getElementById("work-filters");
     var grid = document.getElementById("work-grid");
+    var status = document.getElementById("work-status");
+    var control = document.getElementById("view-all-control");
+    var toggle = document.getElementById("work-toggle");
     if (!filters || !grid) return;
     var active = "all";
-    var projects = SITE.projects.filter(isReal);
-    var VISIBLE_LIMIT = 4;
+    var projects = (SITE.projects || []).filter(isReal);
+    var visibleLimit = 4;
     var showAll = false;
-
-    function createThumb(p) {
-      if (p.thumbnail) return null;
-      var wrap = el("div", "work-thumb");
-      wrap.innerHTML = serviceIcons[p.category] || svg.spark;
-      return wrap;
-    }
 
     function paint() {
       grid.replaceChildren();
       var list = projects.filter(function (p) {
         return active === "all" || p.category === active;
       });
-      var toShow = showAll ? list : list.slice(0, VISIBLE_LIMIT);
-      toShow.forEach(function (p) {
-        var card = el("button", "work-card reveal");
-        card.type = "button";
-        if (p.thumbnail) {
-          var img = document.createElement("img");
-          img.src = p.thumbnail;
-          img.alt = "";
-          img.width = 640;
-          img.height = 360;
-          img.loading = "lazy";
-          card.appendChild(img);
-        } else {
-          var fallback = createThumb(p);
-          if (fallback) card.appendChild(fallback);
-        }
-        var cat = SITE.projectFilters.find(function (f) {
-          return f.id === p.category;
-        });
-        card.appendChild(el("div", "meta", cat ? cat.label : p.category));
-        card.appendChild(el("h3", "", p.title));
-        card.appendChild(el("p", "", p.description));
-        card.addEventListener("click", function () {
-          openModal(p);
-        });
-        grid.appendChild(card);
+      var toShow = showAll ? list : list.slice(0, visibleLimit);
+      toShow.forEach(function (project) {
+        grid.appendChild(createProjectCard(project));
       });
-
-      // update / create view-all control
-      var existing = document.getElementById("view-all-control");
-      if (existing) existing.remove();
-      var listLen = list.length;
-      if (listLen > VISIBLE_LIMIT) {
-        var control = el("div", "view-all-control");
-        control.id = "view-all-control";
-        var btn = el("button", "btn btn-outline view-all-btn", showAll ? "View less" : "View all " + (listLen - VISIBLE_LIMIT) + " more");
-        btn.type = "button";
-        btn.addEventListener("click", function () {
-          showAll = !showAll;
-          paint();
-          // move focus back to grid after toggle for accessibility
-          grid.querySelectorAll('.work-card')[0].focus();
-        });
-        control.appendChild(btn);
-        grid.parentNode.appendChild(control);
+      if (!list.length) {
+        var empty = el("div", "work-empty");
+        empty.appendChild(el("h3", "", "No published projects yet"));
+        empty.appendChild(el("p", "", "This collection is still being prepared. Explore the other public projects in the meantime."));
+        if (active !== "all") {
+          var reset = el("button", "btn btn-outline", "Browse all work");
+          reset.type = "button";
+          reset.addEventListener("click", function () {
+            var all = filters.querySelector(".filter-btn");
+            all.click();
+            all.focus();
+          });
+          empty.appendChild(reset);
+        }
+        grid.appendChild(empty);
+      }
+      if (status) {
+        status.textContent = list.length ? toShow.length + " of " + list.length + " project" + (list.length === 1 ? "" : "s") : "No published projects";
+      }
+      if (control) control.hidden = list.length <= visibleLimit;
+      if (toggle) {
+        toggle.textContent = showAll ? "View fewer projects" : "View all " + list.length + " projects";
+        toggle.setAttribute("aria-expanded", String(showAll));
       }
     }
 
-    SITE.projectFilters.forEach(function (f, i) {
+    if (toggle) {
+      toggle.addEventListener("click", function () {
+        showAll = !showAll;
+        paint();
+      });
+    }
+
+    filters.replaceChildren();
+    SITE.projectFilters.forEach(function (f) {
       var btn = el("button", "filter-btn", f.label);
       btn.type = "button";
-      btn.setAttribute("role", "tab");
-      btn.setAttribute("aria-pressed", i === 0 ? "true" : "false");
-      if (i === 0) btn.classList.add("is-active");
+      btn.setAttribute("aria-controls", "work-grid");
+      btn.setAttribute("aria-pressed", f.id === active ? "true" : "false");
+      if (f.id === active) btn.classList.add("is-active");
       btn.addEventListener("click", function () {
         active = f.id;
-        filters.querySelectorAll(".filter-btn").forEach(function (b) {
-          b.classList.remove("is-active");
-          b.setAttribute("aria-pressed", "false");
+        filters.querySelectorAll(".filter-btn").forEach(function (filter) {
+          filter.classList.remove("is-active");
+          filter.setAttribute("aria-pressed", "false");
         });
         btn.classList.add("is-active");
         btn.setAttribute("aria-pressed", "true");
-        showAll = false; // reset when switching filters
+        showAll = false;
         paint();
       });
       filters.appendChild(btn);
@@ -709,7 +761,7 @@
   }
 
   function reveal() {
-    var nodes = document.querySelectorAll(".hero-inner, .section, .service-card, .work-card, .process-list li");
+    var nodes = document.querySelectorAll(".hero-inner, .section, .service-card, .process-list li");
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       nodes.forEach(function (n) {
         n.classList.add("is-visible");
@@ -741,6 +793,7 @@
     renderHero();
     renderServices();
     renderWork();
+    renderFeaturedWork();
     initModal();
     renderTrust();
     renderTestimonials();

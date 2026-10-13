@@ -27,6 +27,10 @@ Almost everything on the company homepage is in [`data/content.js`](data/content
 5. Optional `files` array (see below).
 6. Do not invent clients or metrics. If a field is unknown, leave a `// TODO:` comment.
 
+The Work section initially shows four projects. Its category filters and View all / View fewer control update the visible collection and project count. Categories without published projects display a message instead of a blank grid. Project previews use a category illustration when no thumbnail is supplied or an image fails to load.
+
+Set `featured: true` on a real project to include it in Featured Work. Featured cards use the same project details and original links as Work; the section is hidden when no real projects are marked as featured.
+
 ### Add a PDF or PPTX
 
 1. Put PDFs in `assets/docs/` and decks in `assets/decks/`.

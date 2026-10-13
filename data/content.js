@@ -135,6 +135,7 @@ window.SITE = {
     },
     {
       id: "portfolio-animation",
+      featured: true,
       title: "Portfolio animation reel",
       category: "animation",
       thumbnail: "https://i.ytimg.com/vi/Jv_u1frLJTQ/hqdefault.jpg",
@@ -159,6 +160,7 @@ window.SITE = {
     },
     {
       id: "character-design",
+      featured: true,
       title: "Character design",
       category: "animation",
       thumbnail: "",
@@ -171,6 +173,7 @@ window.SITE = {
     },
     {
       id: "github-projects",
+      featured: true,
       title: "GitHub projects",
       category: "ai-ml",
       thumbnail: "",

@@ -565,6 +565,9 @@
     var heading = document.getElementById("map-heading");
     var caption = document.getElementById("map-caption");
     var frame = document.getElementById("map-frame");
+    var localName = document.getElementById("map-local-name");
+    var directions = document.getElementById("map-directions");
+    var openMap = document.getElementById("map-open");
     var mail = document.getElementById("contact-email");
     if (mail) {
       mail.href = "mailto:" + SITE.company.email;
@@ -572,17 +575,21 @@
     }
     if (heading) heading.textContent = loc.label;
     if (caption) caption.textContent = loc.caption;
-    if (frame && loc.embedSrc) {
+    if (localName) localName.textContent = loc.localName || "";
+    var coordinates = loc.latitude + "," + loc.longitude;
+    var destination = encodeURIComponent(coordinates);
+    if (directions) directions.href = "https://www.google.com/maps/dir/?api=1&destination=" + destination;
+    if (openMap) openMap.href = "https://www.google.com/maps/search/?api=1&query=" + destination;
+    if (frame) {
       var iframe = document.createElement("iframe");
-      iframe.src = loc.embedSrc;
+      iframe.src = "https://www.google.com/maps?q=" + destination + "&z=17&hl=en&output=embed";
       iframe.width = 600;
       iframe.height = 450;
       iframe.loading = "lazy";
       iframe.referrerPolicy = "strict-origin-when-cross-origin";
       iframe.allowFullscreen = true;
-      iframe.title = loc.label || "Map of studio location";
-      iframe.style.border = "0";
-      frame.appendChild(iframe);
+      iframe.title = "Location of " + loc.caption + " in Bangladesh";
+      frame.replaceChildren(iframe);
     }
 
     var form = document.getElementById("contact-form");

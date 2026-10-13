@@ -72,6 +72,12 @@ For GitHub Pages: Settings → Pages → deploy from the `company-site` branch (
 - Real testimonials (quote + name; optional role)
 - Certificate scans or verification URLs
 - Per-project role/outcome polish, and any PDF/PPTX case files
-- English shop name and street for the map caption (the embed is already in place)
+- Street address for the shop, if you want it displayed (the map uses the existing shop coordinates)
 - Logo if you have a mark beyond the RL favicon / wordmark
 - Confirm personal phone and Gmail should stay only on `portfolio.html`
+
+## Shop map and visual style
+
+The Physical shop section uses the shop name and latitude/longitude in `SITE.company.location`. Its embedded map, directions, and Google Maps link all use the same coordinates. Visitors can use the direct links if the third-party embed is blocked. Update these coordinates only when the shop location changes; a street address or opening hours are not assumed.
+
+Both pages share the warm editorial styling in `css/luxury.css`. The company site's light/dark theme colors remain in `css/company.css`, and the portfolio keeps its project reveal toggle and existing interactions.

@@ -1,0 +1,496 @@
+body[data-page] {
+  -webkit-font-smoothing: antialiased;
+}
+
+body[data-page] ::selection {
+  background: #cfb57b;
+  color: #242419;
+}
+
+body[data-page="company"] .wordmark {
+  font-size: 1.65rem;
+  font-weight: 500;
+}
+
+body[data-page="company"] .hero .eyebrow,
+body[data-page="company"] .hero .lede {
+  text-align: left;
+  margin-left: 0;
+}
+
+body[data-page="company"] .hero .lede {
+  max-width: 36rem;
+  margin-top: 1.6rem;
+}
+
+.hero-colophon {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 4rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+}
+
+.hero-colophon a {
+  text-decoration: none;
+}
+
+body[data-page="company"] .section h2 {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+body[data-page="company"] .section-intro {
+  margin-left: 0;
+  text-align: left;
+}
+
+body[data-page="company"] .service-card h3 {
+  font-size: 1.65rem;
+  font-weight: 500;
+}
+
+body[data-page="company"] .work-card img {
+  border-radius: 3px;
+}
+
+.map-block {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.shop-details {
+  padding: 2rem 2rem 1.5rem;
+}
+
+.shop-details .eyebrow {
+  text-align: left;
+  margin-bottom: 0.8rem;
+}
+
+.shop-details #map-heading {
+  font-size: clamp(2rem, 4vw, 2.9rem);
+  font-weight: 400;
+  margin: 0 0 0.8rem;
+}
+
+.map-caption {
+  margin: 0;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.shop-local-name,
+.shop-country {
+  margin: 0.4rem 0 0;
+  color: var(--muted);
+}
+
+.shop-country {
+  font-size: 0.9rem;
+}
+
+.shop-local-name {
+  font-family: "Noto Sans Bengali", sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+
+.map-frame {
+  background: var(--surface-2);
+  border-block: 1px solid var(--line);
+  aspect-ratio: 4 / 3;
+}
+
+.map-frame iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  color-scheme: light;
+}
+
+.shop-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.5rem 2rem 0;
+}
+
+.shop-actions .btn {
+  gap: 1rem;
+}
+
+.shop-map-link {
+  font-size: 0.9rem;
+  text-underline-offset: 0.3em;
+}
+
+.map-note {
+  margin: 1rem 2rem 1.5rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+body[data-page="portfolio"] {
+  --bg: #f5f1e8;
+  --panel: #fcf9f2;
+  --panel-strong: #fcf9f2;
+  --text: #252a22;
+  --muted: #626454;
+  --line: #d9d3c3;
+  --primary: #79602e;
+  --primary-2: #9a7b3e;
+  --primary-dark: #604921;
+  --primary-color: #79602e;
+  --shadow: 0 16px 40px rgba(39, 42, 29, 0.06);
+  --radius: 5px;
+  --section-bg: transparent;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Source Sans 3", sans-serif;
+}
+
+body[data-page="portfolio"] main {
+  max-width: none;
+  padding: 0;
+}
+
+body[data-page="portfolio"] header {
+  background: rgba(245, 241, 232, 0.94);
+  padding: 0;
+}
+
+body[data-page="portfolio"] .company-banner,
+body[data-page="portfolio"] footer {
+  background: #20251e;
+  color: #f3efdf;
+}
+
+body[data-page="portfolio"] .company-banner a {
+  color: #dbc594;
+}
+
+body[data-page="portfolio"] .logo a,
+body[data-page="portfolio"] h1,
+body[data-page="portfolio"] h2,
+body[data-page="portfolio"] h3 {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+
+body[data-page="portfolio"] .logo a {
+  font-size: 1.8rem;
+  white-space: nowrap;
+}
+
+.wordmark-detail {
+  font-family: "Source Sans 3", sans-serif;
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+body[data-page="portfolio"] nav.nav {
+  display: block;
+}
+
+body[data-page="portfolio"] nav.nav ul {
+  gap: 1rem;
+}
+
+body[data-page="portfolio"] .hero {
+  padding: 5.5rem 0 4.5rem;
+}
+
+body[data-page="portfolio"] .hero-inner {
+  gap: clamp(2rem, 5vw, 5rem);
+}
+
+body[data-page="portfolio"] h1 {
+  font-size: clamp(3.5rem, 5.5vw, 5.9rem);
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+body[data-page="portfolio"] .highlight {
+  color: var(--primary);
+  background: none;
+  font-style: italic;
+}
+
+body[data-page="portfolio"] .eyebrow {
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  letter-spacing: 0.18em;
+  font-size: 0.73rem;
+  font-weight: 600;
+}
+
+body[data-page="portfolio"] .hero-copy p {
+  max-width: 32rem;
+  margin-top: 1.5rem;
+  line-height: 1.8;
+}
+
+body[data-page="portfolio"] .btn {
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+body[data-page="portfolio"] .btn-primary,
+body[data-page="portfolio"] .view-all-btn {
+  background: #353f2d;
+  color: #fcf9f2;
+  border-color: #353f2d;
+  box-shadow: none;
+}
+
+body[data-page="portfolio"] .btn-primary:hover,
+body[data-page="portfolio"] .view-all-btn:hover {
+  background: #465139;
+}
+
+body[data-page="portfolio"] .btn-secondary {
+  background: transparent;
+  border-color: #aca58f;
+}
+
+body[data-page="portfolio"] .hero-metrics {
+  gap: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+
+body[data-page="portfolio"] .metric {
+  min-width: 0;
+  flex: 1;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+body[data-page="portfolio"] .metric strong {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+body[data-page="portfolio"] .profile-panel {
+  display: grid;
+  min-height: 580px;
+  background: #292f25;
+  border-radius: 150px 150px 5px 5px;
+  border: 1px solid #d3c5a6;
+  box-shadow: 12px 16px 0 #e9e2d3;
+}
+
+.portrait {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+}
+
+body[data-page="portfolio"] .profile-panel::before {
+  z-index: 1;
+  background: linear-gradient(180deg, transparent 25%, rgba(25, 31, 21, 0.45) 52%, #20251e 100%);
+  pointer-events: none;
+}
+
+body[data-page="portfolio"] .profile-content {
+  z-index: 2;
+  padding: 2rem;
+}
+
+body[data-page="portfolio"] .profile-card {
+  padding: 0.9rem 0 0;
+  background: none;
+  border: 0;
+  border-top: 1px solid rgba(225, 214, 184, 0.25);
+  border-radius: 0;
+  backdrop-filter: none;
+  color: #f3efdf;
+}
+
+body[data-page="portfolio"] .profile-card strong {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 1.6rem;
+  font-weight: 500;
+}
+
+body[data-page="portfolio"] .section {
+  padding: 5.5rem 0;
+  border-top: 1px solid var(--line);
+}
+
+body[data-page="portfolio"] .section-heading {
+  max-width: 48rem;
+  margin-left: 0;
+  text-align: left;
+  color: var(--text);
+}
+
+body[data-page="portfolio"] .section-heading::after {
+  display: none;
+}
+
+body[data-page="portfolio"] .section-heading h2 {
+  font-size: clamp(2.6rem, 4vw, 3.8rem);
+  line-height: 1.1;
+}
+
+body[data-page="portfolio"] .section-heading p {
+  margin-left: 0;
+  font-size: 1.05rem;
+}
+
+body[data-page="portfolio"] .services-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+body[data-page="portfolio"] .service-card,
+body[data-page="portfolio"] .portfolio-card,
+body[data-page="portfolio"] .review-card,
+body[data-page="portfolio"] .cert-card {
+  background: var(--panel);
+  border-radius: 5px;
+  border-color: var(--line);
+  box-shadow: none;
+}
+
+body[data-page="portfolio"] .service-card {
+  padding: 2rem;
+}
+
+body[data-page="portfolio"] .service-card h3 {
+  font-size: 1.8rem;
+}
+
+body[data-page="portfolio"] .service-icon {
+  background: #eee8d9;
+  border-radius: 50%;
+}
+
+body[data-page="portfolio"] .service-card li,
+body[data-page="portfolio"] .portfolio-tag {
+  background: #eee8d9;
+  border-radius: 3px;
+}
+
+body[data-page="portfolio"] .portfolio-thumb {
+  background: #e9e2d3;
+}
+
+body[data-page="portfolio"] .portfolio-body h3 {
+  font-size: 1.7rem;
+}
+
+body[data-page="portfolio"] .review-card {
+  padding: 2rem;
+  border-top: 2px solid #b69b63;
+}
+
+body[data-page="portfolio"] .review-card blockquote {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 1.5rem;
+  line-height: 1.45;
+}
+
+body[data-page="portfolio"] .stars {
+  color: #79602e;
+}
+
+body[data-page="portfolio"] :focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+}
+
+@media (max-width: 1050px) {
+  .wordmark-detail {
+    display: none;
+  }
+}
+
+@media (max-width: 960px) {
+  body[data-page="portfolio"] .profile-panel {
+    width: min(100%, 32rem);
+    justify-self: center;
+    min-height: 540px;
+  }
+}
+
+@media (max-width: 720px) {
+  body[data-page="portfolio"] .hero {
+    padding: 3.5rem 0;
+  }
+
+  body[data-page="portfolio"] nav.nav {
+    background: var(--panel);
+  }
+
+  body[data-page="portfolio"] nav.nav ul {
+    align-items: stretch;
+    gap: 0;
+  }
+
+  body[data-page="portfolio"] nav.nav a {
+    display: block;
+    padding: 0.6rem;
+  }
+
+  body[data-page="portfolio"] .services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-page="portfolio"] .profile-panel {
+    min-height: 500px;
+    box-shadow: 6px 8px 0 #e9e2d3;
+  }
+
+  body[data-page="portfolio"] .section {
+    padding: 3.5rem 0;
+  }
+
+  .shop-details {
+    padding: 1.5rem;
+  }
+
+  .shop-actions {
+    padding: 1.25rem 1.5rem 0;
+  }
+
+  .map-note {
+    margin-inline: 1.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  body[data-page] *,
+  body[data-page] *::before,
+  body[data-page] *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

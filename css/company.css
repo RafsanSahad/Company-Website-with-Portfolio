@@ -10,10 +10,12 @@
   --accent: #3d9cf0;
   --accent-hover: #5aaff5;
   --accent-ink: #061018;
+  --accent-gradient: linear-gradient(135deg, #7dd3fc 0%, #3d9cf0 30%, #7c8cff 58%, #8b5cf6 100%);
+  --accent-gradient-strong: linear-gradient(135deg, #8de3ff 0%, #4aa3ff 25%, #5b8cff 60%, #8a5cf6 100%);
   --danger: #f07178;
   --ok: #6bcb8b;
   --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
-  --radius: 14px;
+  --radius: 18px;
   --header-h: 4.25rem;
   --font-display: "Outfit", system-ui, "Segoe UI", sans-serif;
   --font-body: "Source Sans 3", system-ui, "Segoe UI", sans-serif;
@@ -184,41 +186,45 @@ a:hover {
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  min-height: 2.6rem;
-  padding: 0.45rem 1.05rem;
+  min-height: 2.9rem;
+  padding: 0.7rem 1.3rem;
   border-radius: 999px;
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.92rem;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
   text-decoration: none;
   border: 1px solid transparent;
   cursor: pointer;
-  transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease, background 0.22s ease, color 0.22s ease;
 }
 
 .btn:hover {
-  transform: translateY(-1px);
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 16px 30px rgba(89, 126, 255, 0.18);
 }
 
 .btn-outline {
   color: var(--text);
-  border-color: var(--accent);
-  background: transparent;
+  border-color: rgba(125, 151, 255, 0.3);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .btn-outline:hover {
-  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border-color: rgba(125, 151, 255, 0.5);
   color: var(--text);
 }
 
 .btn-solid {
-  background: var(--accent);
+  background: var(--accent-gradient);
   color: var(--accent-ink);
+  border-color: transparent;
+  box-shadow: 0 16px 30px rgba(60, 118, 255, 0.25);
 }
 
 .btn-solid:hover {
-  background: var(--accent-hover);
+  background: var(--accent-gradient-strong);
   color: var(--accent-ink);
 }
 
@@ -226,6 +232,7 @@ a:hover {
   opacity: 0.45;
   cursor: not-allowed;
   transform: none;
+  box-shadow: none;
 }
 
 .theme-toggle,
@@ -280,14 +287,14 @@ html[data-theme="light"] .theme-toggle-icon {
   min-height: calc(100vh - var(--header-h));
   display: grid;
   align-items: center;
-  padding: 4rem 0 5rem;
+  padding: 4.5rem 0 5.5rem;
 }
 
 .hero-bg {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 70% 50% at 80% 10%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 55%),
+    radial-gradient(ellipse 68% 52% at 50% 20%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 52%),
     linear-gradient(180deg, transparent, var(--bg)),
     repeating-linear-gradient(
       90deg,
@@ -295,7 +302,7 @@ html[data-theme="light"] .theme-toggle-icon {
       transparent 47px,
       color-mix(in srgb, var(--line) 70%, transparent) 48px
     );
-  opacity: 0.55;
+  opacity: 0.8;
   animation: drift 28s linear infinite;
   pointer-events: none;
 }
@@ -307,19 +314,20 @@ html[data-theme="light"] .theme-toggle-icon {
 
 .hero-inner {
   position: relative;
-  max-width: 42rem;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: 52rem;
   width: min(1120px, calc(100% - 2rem));
+  margin: 0 auto;
+  text-align: center;
 }
 
 .eyebrow {
   font-family: var(--font-display);
   font-size: 0.8rem;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--accent);
-  margin: 0 0 0.9rem;
+  margin: 0 0 1rem;
+  text-align: center;
 }
 
 .hero h1,
@@ -328,29 +336,33 @@ html[data-theme="light"] .theme-toggle-icon {
   font-family: var(--font-display);
   font-weight: 650;
   letter-spacing: -0.03em;
-  line-height: 1.12;
+  line-height: 1.08;
   margin: 0 0 1rem;
 }
 
 .hero h1 {
-  font-size: clamp(2.1rem, 6vw, 3.5rem);
+  font-size: clamp(2.3rem, 6vw, 4rem);
+  text-align: center;
 }
 
 .lede,
 .section-intro {
   color: var(--muted);
-  margin: 0 0 1.5rem;
+  margin: 0 auto 1.6rem;
   max-width: 40rem;
+  text-align: center;
+  font-size: 1.08rem;
 }
 
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  justify-content: center;
+  gap: 0.85rem;
 }
 
 .section {
-  padding: 4.5rem 0;
+  padding: 5rem 0;
 }
 
 .section-alt {
@@ -358,7 +370,7 @@ html[data-theme="light"] .theme-toggle-icon {
 }
 
 .section h2 {
-  font-size: clamp(1.7rem, 3vw, 2.15rem);
+  font-size: clamp(1.9rem, 3vw, 2.35rem);
 }
 
 .section h3 {
@@ -369,7 +381,7 @@ html[data-theme="light"] .theme-toggle-icon {
 
 .card-grid {
   display: grid;
-  gap: 1rem;
+  gap: 1.4rem;
   grid-template-columns: 1fr;
 }
 
@@ -377,11 +389,25 @@ html[data-theme="light"] .theme-toggle-icon {
 .service-card,
 .work-card,
 .cert-card {
-  background: var(--surface);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 90%, transparent), var(--surface));
   border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 1.25rem 1.3rem;
+  border-radius: 20px;
+  padding: 1.5rem 1.45rem;
   box-shadow: var(--shadow);
+}
+
+.service-card,
+.work-card,
+.cert-card {
+  transition: transform 0.26s ease, box-shadow 0.26s ease, border-color 0.26s ease;
+}
+
+.service-card:hover,
+.work-card:hover,
+.cert-card:hover {
+  transform: translateY(-10px) scale(1.01);
+  border-color: rgba(135, 156, 255, 0.55);
+  box-shadow: 0 26px 54px rgba(8, 18, 36, 0.2);
 }
 
 .service-card svg,
@@ -404,13 +430,13 @@ html[data-theme="light"] .theme-toggle-icon {
 .service-card h3,
 .work-card h3 {
   font-family: var(--font-display);
-  font-size: 1.15rem;
-  margin: 0 0 0.45rem;
+  font-size: 1.2rem;
+  margin: 0 0 0.5rem;
 }
 
 .service-card p,
 .work-card p {
-  margin: 0 0 0.8rem;
+  margin: 0 0 0.85rem;
   color: var(--muted);
 }
 
@@ -423,22 +449,27 @@ html[data-theme="light"] .theme-toggle-icon {
 .filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1.25rem;
+  gap: 0.55rem;
+  margin-bottom: 1.5rem;
 }
 
 .filter-btn {
   border-radius: 999px;
-  padding: 0.35rem 0.9rem;
-  font-weight: 600;
-  font-size: 0.88rem;
+  padding: 0.45rem 0.95rem;
+  font-weight: 700;
+  font-size: 0.86rem;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.filter-btn:hover {
+  transform: translateY(-1px);
 }
 
 .filter-btn[aria-pressed="true"],
 .filter-btn.is-active {
-  background: var(--accent);
+  background: var(--accent-gradient);
   color: var(--accent-ink);
-  border-color: var(--accent);
+  border-color: transparent;
 }
 
 .work-card {
@@ -447,27 +478,24 @@ html[data-theme="light"] .theme-toggle-icon {
   width: 100%;
   color: inherit;
   font: inherit;
-  transition: border-color 0.2s ease, transform 0.2s ease;
-}
-
-.work-card:hover {
-  border-color: var(--accent);
-  transform: translateY(-2px);
+  transition: border-color 0.26s ease, transform 0.26s ease, box-shadow 0.26s ease;
 }
 
 .work-card img {
   width: 100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 0.85rem;
+  border-radius: 12px;
+  margin-bottom: 0.9rem;
   background: var(--surface-2);
 }
 
 .work-card .meta {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--accent);
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .trust {
@@ -783,8 +811,8 @@ html[data-theme="light"] .theme-toggle-icon {
 
 .reveal {
   opacity: 0;
-  transform: translateY(14px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transform: translateY(16px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
 }
 
 .reveal.is-visible {
@@ -828,10 +856,6 @@ html[data-theme="light"] .theme-toggle-icon {
 
   .map-frame iframe {
     height: 360px;
-  }
-
-  .hero-inner {
-    margin-left: 0;
   }
 }
 

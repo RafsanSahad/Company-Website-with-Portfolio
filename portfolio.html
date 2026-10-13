@@ -20,6 +20,40 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
   <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+  <style>
+    /* Modern small animations and view-all button styles */
+    .portfolio-card{
+      transition: transform 320ms cubic-bezier(.2,.9,.2,1), box-shadow 320ms ease, opacity 320ms ease;
+      will-change: transform, opacity;
+      transform-origin: center bottom;
+      opacity: 1;
+    }
+    .portfolio-card:hover{
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 18px 40px rgba(6,15,30,0.12);
+    }
+    /* Hidden cards (collapsed state) */
+    .portfolio-card.hidden{
+      opacity: 0;
+      transform: translateY(12px) scale(0.995);
+      pointer-events: none;
+      height: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden;
+    }
+    .portfolio-controls{display:flex;justify-content:center;margin-top:1.25rem}
+    .view-all-btn{
+      background: linear-gradient(135deg,#0066ff 0%,#00c6ff 100%);
+      color:#fff;border:none;padding:0.7rem 1.2rem;border-radius:999px;font-weight:600;cursor:pointer;box-shadow:0 8px 20px rgba(3,10,30,0.12);
+      transition:transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+    }
+    .view-all-btn:focus{outline:3px solid rgba(0,118,255,0.18)}
+    .view-all-btn[aria-expanded="true"]{background:linear-gradient(135deg,#222bff 0%,#00e3ff 100%)}
+    @media (prefers-reduced-motion: reduce){
+      .portfolio-card, .view-all-btn{transition:none}
+    }
+  </style>
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -94,7 +128,7 @@
               <img src="https://cdn.worldvectorlogo.com/logos/github-icon-1.svg" alt="GitHub logo" style="height:28px;vertical-align:middle;margin-right:8px;"> GitHub
             </a>
             <a href="https://www.facebook.com/itsRafsanSahad" target="_blank" rel="noopener" class="facebook-badge" aria-label="Visit my Facebook profile"> 
-              <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook logo" style="height:28px;vertical-align:middle;margin-right:8px;"> Facebook
+              <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook logo" style="height:28px;vertical-align:middle;margin-right:8px;"> Faceboo[...]
             </a>
           </div>
         </div>
@@ -107,12 +141,12 @@
       <h2 class="about-heading" data-aos="fade-down">About Me</h2>
       <div class="about-content">
         <div class="about-text" data-aos="fade-right">
-          <p>Hello! I'm Rafsan, a passionate and versatile professional with expertise in coding, video editing, animation, and cybersecurity. I thrive on creative challenges and technical problem-solving, blending artistic vision with technical precision to deliver outstanding results in every project.</p>
-          <p>With years of experience as a freelancer, I have worked with clients worldwide on platforms like Fiverr and Upwork, providing top-notch services in video production, motion graphics, software development, and ethical hacking. My commitment to continuous learning and innovation drives me to stay ahead in the fast-evolving digital landscape.</p>
-          <p>Whether it's crafting compelling animations, editing cinematic videos, building secure systems, or writing efficient code, I bring dedication, creativity, and professionalism to every task.</p>
+          <p>Hello! I'm Rafsan, a passionate and versatile professional with expertise in coding, video editing, animation, and cybersecurity. I thrive on creative challenges and technical proble[...]
+          <p>With years of experience as a freelancer, I have worked with clients worldwide on platforms like Fiverr and Upwork, providing top-notch services in video production, motion graphics,[...]
+          <p>Whether it's crafting compelling animations, editing cinematic videos, building secure systems, or writing efficient code, I bring dedication, creativity, and professionalism to ever[...]
           <hr>
           <h3>Professional Summary</h3>
-          <p>I'm a professional freelancer specialising in video editing, animation, penetration testing, and coding. A fast learner with a strong work ethic, I'm always seeking knowledge and challenges.</p>
+          <p>I'm a professional freelancer specialising in video editing, animation, penetration testing, and coding. A fast learner with a strong work ethic, I'm always seeking knowledge and cha[...]
           <p><strong>Email:</strong> mdshadh@gmail.com<br>
           <strong>Phone:</strong> +8801758453814</p>
         </div>
@@ -371,6 +405,11 @@
           </div>
         </div>
       </div>
+
+      <div class="portfolio-controls">
+        <button id="viewAllBtn" class="view-all-btn" aria-expanded="false" aria-controls="portfolio" aria-label="View all projects">View all projects</button>
+      </div>
+
     </section>
     <!-- Testimonials Section -->
     <section class="testimonials-section" id="testimonials" data-aos="fade-up">
@@ -550,6 +589,69 @@
     });
 
     lazyImages.forEach(img => imageObserver.observe(img));
+
+    // SHOW LIMITED PORTFOLIO + VIEW ALL BUTTON
+    (function(){
+      const MAX_VISIBLE = 4; // number of projects to show by default
+      const grid = document.querySelector('.portfolio-grid');
+      if (!grid) return;
+      const cards = Array.from(grid.querySelectorAll('.portfolio-card'));
+      if (cards.length <= MAX_VISIBLE) {
+        // hide the view-all button if not needed
+        const ctrl = document.getElementById('viewAllBtn');
+        if (ctrl) ctrl.style.display = 'none';
+        return;
+      }
+
+      // Initially hide extras
+      cards.forEach((card, i) => {
+        card.dataset.index = i;
+        if (i >= MAX_VISIBLE) {
+          card.classList.add('hidden');
+          card.setAttribute('aria-hidden','true');
+        } else {
+          card.setAttribute('aria-hidden','false');
+        }
+      });
+
+      const btn = document.getElementById('viewAllBtn');
+      if (!btn) return;
+      btn.addEventListener('click', () => {
+        const expanded = btn.getAttribute('aria-expanded') === 'true';
+        if (expanded) {
+          // collapse
+          cards.forEach((card, i) => {
+            if (i >= MAX_VISIBLE) {
+              card.classList.add('hidden');
+              card.setAttribute('aria-hidden','true');
+            }
+          });
+          btn.setAttribute('aria-expanded','false');
+          btn.textContent = 'View all projects';
+          // re-run AOS to refresh animated items
+          if (window.AOS && typeof AOS.refreshHard === 'function') AOS.refreshHard();
+          else if (window.AOS && typeof AOS.refresh === 'function') AOS.refresh();
+          // move focus back to the first portfolio card for accessibility
+          const first = cards[0]; if (first) first.querySelector('a,button')?.focus();
+        } else {
+          // expand
+          cards.forEach((card, i) => {
+            if (i >= MAX_VISIBLE) {
+              card.classList.remove('hidden');
+              card.setAttribute('aria-hidden','false');
+              // trigger small entrance animation
+              card.style.transitionDelay = (i - MAX_VISIBLE) * 40 + 'ms';
+            }
+          });
+          btn.setAttribute('aria-expanded','true');
+          btn.textContent = 'Show less';
+          if (window.AOS && typeof AOS.refreshHard === 'function') AOS.refreshHard();
+          else if (window.AOS && typeof AOS.refresh === 'function') AOS.refresh();
+        }
+      });
+
+    })();
+
   </script>
 </body>
-</html> 
+</html>

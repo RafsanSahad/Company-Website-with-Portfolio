@@ -27,6 +27,10 @@ Almost everything on the company homepage is in [`data/content.js`](data/content
 5. Optional `files` array (see below).
 6. Do not invent clients or metrics. If a field is unknown, leave a `// TODO:` comment.
 
+The Work section initially shows four projects. Its category filters and View all / View fewer control update the visible collection and project count. Categories without published projects display a message instead of a blank grid. Project previews use a category illustration when no thumbnail is supplied or an image fails to load.
+
+Set `featured: true` on a real project to include it in Featured Work. Featured cards use the same project details and original links as Work; the section is hidden when no real projects are marked as featured.
+
 ### Add a PDF or PPTX
 
 1. Put PDFs in `assets/docs/` and decks in `assets/decks/`.
@@ -45,7 +49,13 @@ PDFs open in an embedded viewer in the project modal. PPTX files get a download 
 
 ### Add a testimonial
 
-Replace the placeholder entry in `SITE.testimonials`. Remove `placeholder: true` and set a real `name`, `quote`, and optional `role`. Entries with `placeholder: true` are not rendered. If none are real, the whole Testimonials section stays hidden.
+The company homepage's Client reviews section displays real entries from `SITE.testimonials`, or prefers `SITE.fiverrReviews` when that array contains published reviews. Replace the placeholder entry with an authentic `name` and `quote`, remove `placeholder: true`, and optionally supply `role` and a `rating` between 1 and 5. Only include feedback you have permission to publish. Blank and placeholder reviews are not rendered, and no rating is assumed when one is missing.
+
+The review carousel selects a random starting review and shuffles through every entry before repeating, avoiding back-to-back duplicates. Multiple reviews rotate every seven seconds while the carousel is on screen. Rotation pauses on hover, keyboard focus, or a hidden browser tab; visitors can pause/resume it or manually shuffle. Reduced-motion preferences disable automatic rotation by default. Single reviews do not show rotation controls.
+
+`SITE.reviewExamples` contains fictional five-star examples requested for the carousel preview. Each example has `demo: true`; both the section and each slide visibly identify them as illustrative, not actual client feedback. Real published reviews automatically take priority and replace the examples. To show only the Fiverr fallback until authentic reviews are ready, set `reviewExamples: []`. Do not remove the example labels or present fictional reviews as genuine.
+
+The profile URL comes from `SITE.links.fiverr`. This is a display-only section; it does not scrape reviews or collect visitor submissions. The floating chat icon at the bottom right links to the existing Contact section and supports keyboard navigation.
 
 ### Add a certificate
 
@@ -72,6 +82,12 @@ For GitHub Pages: Settings → Pages → deploy from the `company-site` branch (
 - Real testimonials (quote + name; optional role)
 - Certificate scans or verification URLs
 - Per-project role/outcome polish, and any PDF/PPTX case files
-- English shop name and street for the map caption (the embed is already in place)
+- Street address for the shop, if you want it displayed (the map uses the existing shop coordinates)
 - Logo if you have a mark beyond the RL favicon / wordmark
 - Confirm personal phone and Gmail should stay only on `portfolio.html`
+
+## Shop map and visual style
+
+The Physical shop section uses the shop name and latitude/longitude in `SITE.company.location`. Its embedded map, directions, and Google Maps link all use the same coordinates. Visitors can use the direct links if the third-party embed is blocked. Update these coordinates only when the shop location changes; a street address or opening hours are not assumed.
+
+Both pages share the warm editorial styling in `css/luxury.css`. The company site's light/dark theme colors remain in `css/company.css`, and the portfolio keeps its project reveal toggle and existing interactions.

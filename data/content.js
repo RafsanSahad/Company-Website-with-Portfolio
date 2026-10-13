@@ -17,11 +17,11 @@ window.SITE = {
     story:
       "Rafsan Labs grew out of years of freelance delivery on Fiverr and Upwork — video, animation, software, and security work for clients worldwide. The studio exists so those capabilities sit together with a clear process: discover, plan, build, then deliver and support. We stay small on purpose. Credibility comes from finished work, not from inflated claims.",
     location: {
-      // TODO: English shop name and street address for captions / JSON-LD
       label: "Physical shop",
-      caption: "One of our physical shops.",
-      embedSrc:
-        "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3666.7034923875603!2d89.1652249!3d23.217474!2m3!1f0!2f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ff19c990e184bd%3A0x70add8fde0ebf51!2z4Kau4KeL4Kay4KeN4Kay4Ka-IOCmrOCmuOCnjeCmpOCnjeCmsCDgpqzgpr_gpqrgpqjgpr8!5e0!3m2!1sen!2sbd!4v1791813784594!5m2!1sen!2sbd"
+      caption: "Molla Enterprise · Molla Bostro Biponi",
+      localName: "মোল্লা ইন্টারপ্রাইজ",
+      latitude: 23.217500578856964,
+      longitude: 89.1652736830444
     }
   },
 
@@ -52,6 +52,7 @@ window.SITE = {
   nav: [
     { label: "Services", href: "#services" },
     { label: "Work", href: "#work" },
+    { label: "Reviews", href: "#reviews" },
     { label: "Process", href: "#process" },
     { label: "About", href: "#about" },
     { label: "Contact", href: "#contact" }
@@ -135,6 +136,7 @@ window.SITE = {
     },
     {
       id: "portfolio-animation",
+      featured: true,
       title: "Portfolio animation reel",
       category: "animation",
       thumbnail: "https://i.ytimg.com/vi/Jv_u1frLJTQ/hqdefault.jpg",
@@ -159,6 +161,7 @@ window.SITE = {
     },
     {
       id: "character-design",
+      featured: true,
       title: "Character design",
       category: "animation",
       thumbnail: "",
@@ -171,6 +174,7 @@ window.SITE = {
     },
     {
       id: "github-projects",
+      featured: true,
       title: "GitHub projects",
       category: "ai-ml",
       thumbnail: "",
@@ -199,6 +203,37 @@ window.SITE = {
       name: "",
       role: "",
       quote: "",
+      rating: 5
+    }
+  ],
+
+  reviewExamples: [
+    {
+      demo: true,
+      name: "Nabil Chowdhury",
+      role: "Illustrative video project",
+      quote: "The edit gave our story a clear rhythm. The little details in the pacing, sound, and final polish made the whole piece feel thoughtfully put together.",
+      rating: 5
+    },
+    {
+      demo: true,
+      name: "Mira Rahman",
+      role: "Illustrative animation project",
+      quote: "Our idea became a charming animation with real personality. Every movement felt intentional, and the final result was a joy to watch.",
+      rating: 5
+    },
+    {
+      demo: true,
+      name: "Elias Karim",
+      role: "Illustrative software project",
+      quote: "Clear explanations, a careful approach, and a handoff that was easy to follow. It felt like a collaboration from the first conversation to the final delivery.",
+      rating: 5
+    },
+    {
+      demo: true,
+      name: "Saira Malik",
+      role: "Illustrative design project",
+      quote: "The visual direction captured the feeling we had in mind. The work was considered, expressive, and full of the small touches that make a design memorable.",
       rating: 5
     }
   ],

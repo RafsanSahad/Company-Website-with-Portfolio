@@ -172,8 +172,8 @@
     var modal = document.getElementById("project-modal");
     var title = document.getElementById("modal-title");
     var body = document.getElementById("modal-body");
-    var dialog = modal.querySelector(".modal-dialog");
     if (!modal || !title || !body) return;
+    var dialog = modal.querySelector(".modal-dialog");
 
     modalState.lastFocus = document.activeElement;
     title.textContent = project.title;
@@ -282,7 +282,10 @@
         if (!nodes.length) return;
         var first = nodes[0];
         var last = nodes[nodes.length - 1];
-        if (e.shiftKey && document.activeElement === first) {
+        if (nodes.indexOf(document.activeElement) === -1) {
+          e.preventDefault();
+          (e.shiftKey ? last : first).focus();
+        } else if (e.shiftKey && document.activeElement === first) {
           e.preventDefault();
           last.focus();
         } else if (!e.shiftKey && document.activeElement === last) {
@@ -293,90 +296,139 @@
     });
   }
 
+  function createProjectCard(project) {
+    var category = SITE.projectFilters.find(function (filter) {
+      return filter.id === project.category;
+    });
+    var card = el("article", "work-card");
+    var preview = el("div", "work-thumb");
+    preview.setAttribute("aria-hidden", "true");
+
+    function showFallback() {
+      preview.replaceChildren();
+      preview.classList.add("work-thumb-fallback");
+      var icon = el("span", "work-thumb-icon");
+      icon.innerHTML = serviceIcons[project.category] || svg.spark;
+      preview.appendChild(icon);
+      preview.appendChild(el("span", "work-thumb-label", category ? category.label : "Studio work"));
+    }
+
+    if (project.thumbnail) {
+      var image = document.createElement("img");
+      image.src = project.thumbnail;
+      image.alt = "";
+      image.width = 640;
+      image.height = 360;
+      image.loading = "lazy";
+      image.addEventListener("error", showFallback, { once: true });
+      preview.appendChild(image);
+    } else {
+      showFallback();
+    }
+
+    card.appendChild(preview);
+    var body = el("div", "work-card-body");
+    body.appendChild(el("p", "meta", category ? category.label : "Studio work"));
+    body.appendChild(el("h3", "", project.title));
+    body.appendChild(el("p", "work-description", project.description));
+    var button = el("button", "project-open", "View project");
+    button.type = "button";
+    button.setAttribute("aria-label", "View project: " + project.title);
+    button.setAttribute("aria-haspopup", "dialog");
+    button.appendChild(el("span", "", "↗"));
+    button.lastChild.setAttribute("aria-hidden", "true");
+    button.addEventListener("click", function () {
+      openModal(project);
+    });
+    body.appendChild(button);
+    card.appendChild(body);
+    return card;
+  }
+
+  function renderFeaturedWork() {
+    var grid = document.getElementById("featured-grid");
+    var section = document.getElementById("featured");
+    if (!grid || !section) return;
+    var projects = (SITE.projects || []).filter(function (project) {
+      return isReal(project) && project.featured;
+    });
+    section.hidden = projects.length === 0;
+    grid.replaceChildren();
+    projects.forEach(function (project) {
+      grid.appendChild(createProjectCard(project));
+    });
+  }
+
   function renderWork() {
     var filters = document.getElementById("work-filters");
     var grid = document.getElementById("work-grid");
+    var status = document.getElementById("work-status");
+    var control = document.getElementById("view-all-control");
+    var toggle = document.getElementById("work-toggle");
     if (!filters || !grid) return;
     var active = "all";
-    var projects = SITE.projects.filter(isReal);
-    var VISIBLE_LIMIT = 4;
+    var projects = (SITE.projects || []).filter(isReal);
+    var visibleLimit = 4;
     var showAll = false;
-
-    function createThumb(p) {
-      if (p.thumbnail) return null;
-      var wrap = el("div", "work-thumb");
-      wrap.innerHTML = serviceIcons[p.category] || svg.spark;
-      return wrap;
-    }
 
     function paint() {
       grid.replaceChildren();
       var list = projects.filter(function (p) {
         return active === "all" || p.category === active;
       });
-      var toShow = showAll ? list : list.slice(0, VISIBLE_LIMIT);
-      toShow.forEach(function (p) {
-        var card = el("button", "work-card reveal");
-        card.type = "button";
-        if (p.thumbnail) {
-          var img = document.createElement("img");
-          img.src = p.thumbnail;
-          img.alt = "";
-          img.width = 640;
-          img.height = 360;
-          img.loading = "lazy";
-          card.appendChild(img);
-        } else {
-          var fallback = createThumb(p);
-          if (fallback) card.appendChild(fallback);
-        }
-        var cat = SITE.projectFilters.find(function (f) {
-          return f.id === p.category;
-        });
-        card.appendChild(el("div", "meta", cat ? cat.label : p.category));
-        card.appendChild(el("h3", "", p.title));
-        card.appendChild(el("p", "", p.description));
-        card.addEventListener("click", function () {
-          openModal(p);
-        });
-        grid.appendChild(card);
+      var toShow = showAll ? list : list.slice(0, visibleLimit);
+      toShow.forEach(function (project) {
+        grid.appendChild(createProjectCard(project));
       });
-
-      // update / create view-all control
-      var existing = document.getElementById("view-all-control");
-      if (existing) existing.remove();
-      var listLen = list.length;
-      if (listLen > VISIBLE_LIMIT) {
-        var control = el("div", "view-all-control");
-        control.id = "view-all-control";
-        var btn = el("button", "btn btn-outline view-all-btn", showAll ? "View less" : "View all " + (listLen - VISIBLE_LIMIT) + " more");
-        btn.type = "button";
-        btn.addEventListener("click", function () {
-          showAll = !showAll;
-          paint();
-          // move focus back to grid after toggle for accessibility
-          grid.querySelectorAll('.work-card')[0].focus();
-        });
-        control.appendChild(btn);
-        grid.parentNode.appendChild(control);
+      if (!list.length) {
+        var empty = el("div", "work-empty");
+        empty.appendChild(el("h3", "", "No published projects yet"));
+        empty.appendChild(el("p", "", "This collection is still being prepared. Explore the other public projects in the meantime."));
+        if (active !== "all") {
+          var reset = el("button", "btn btn-outline", "Browse all work");
+          reset.type = "button";
+          reset.addEventListener("click", function () {
+            var all = filters.querySelector(".filter-btn");
+            all.click();
+            all.focus();
+          });
+          empty.appendChild(reset);
+        }
+        grid.appendChild(empty);
+      }
+      if (status) {
+        status.textContent = list.length ? toShow.length + " of " + list.length + " project" + (list.length === 1 ? "" : "s") : "No published projects";
+      }
+      if (control) control.hidden = list.length <= visibleLimit;
+      if (toggle) {
+        toggle.textContent = showAll ? "View fewer projects" : "View all " + list.length + " projects";
+        toggle.setAttribute("aria-expanded", String(showAll));
       }
     }
 
-    SITE.projectFilters.forEach(function (f, i) {
+    if (toggle) {
+      toggle.addEventListener("click", function () {
+        showAll = !showAll;
+        paint();
+      });
+    }
+
+    filters.replaceChildren();
+    SITE.projectFilters.forEach(function (f) {
       var btn = el("button", "filter-btn", f.label);
       btn.type = "button";
-      btn.setAttribute("role", "tab");
-      btn.setAttribute("aria-pressed", i === 0 ? "true" : "false");
-      if (i === 0) btn.classList.add("is-active");
+      btn.setAttribute("aria-controls", "work-grid");
+      btn.setAttribute("aria-pressed", f.id === active ? "true" : "false");
+      if (f.id === active) btn.classList.add("is-active");
       btn.addEventListener("click", function () {
         active = f.id;
-        filters.querySelectorAll(".filter-btn").forEach(function (b) {
-          b.classList.remove("is-active");
-          b.setAttribute("aria-pressed", "false");
+        filters.querySelectorAll(".filter-btn").forEach(function (filter) {
+          filter.classList.remove("is-active");
+          filter.setAttribute("aria-pressed", "false");
         });
         btn.classList.add("is-active");
         btn.setAttribute("aria-pressed", "true");
-        showAll = false; // reset when switching filters
+        showAll = false;
         paint();
       });
       filters.appendChild(btn);
@@ -404,80 +456,185 @@
     });
   }
 
-  function renderTestimonials() {
-    var section = document.getElementById("testimonials");
-    var track = document.getElementById("testimonials-track");
-    var dots = document.getElementById("testimonial-dots");
-    var prev = document.getElementById("testimonial-prev");
-    var next = document.getElementById("testimonial-next");
+  function renderReviews() {
+    var section = document.getElementById("reviews");
+    var grid = document.getElementById("reviews-grid");
+    var empty = document.getElementById("reviews-empty");
+    var source = document.getElementById("reviews-source");
+    var carousel = document.getElementById("review-carousel");
+    var controls = document.getElementById("review-carousel-controls");
+    var pauseButton = document.getElementById("review-pause");
+    var shuffleButton = document.getElementById("review-shuffle");
+    var position = document.getElementById("review-position");
+    var announcement = document.getElementById("review-announcement");
+    var demoNote = document.getElementById("reviews-demo-note");
+    var intro = document.getElementById("reviews-intro-copy");
+    if (!section || !grid || !empty || !source || !carousel) return;
 
-    // prefer explicit fiverrReviews (to avoid scraping). SITE.fiverrReviews should be an array of {name, role, quote, rating}
-    var reviews = (SITE.fiverrReviews || []).filter(function (r) {
-      return r && r.quote && r.name;
-    });
-
-    // fallback to SITE.testimonials
-    if (!reviews.length) {
-      reviews = (SITE.testimonials || []).filter(function (t) {
-        return isReal(t) && t.quote && t.name;
-      });
+    function isPublishedReview(review) {
+      return isReal(review) && !review.demo && typeof review.name === "string" && review.name.trim() && typeof review.quote === "string" && review.quote.trim();
     }
 
-    if (!section) return;
+    var reviews = (SITE.fiverrReviews || []).filter(isPublishedReview);
+    if (!reviews.length) reviews = (SITE.testimonials || []).filter(isPublishedReview);
+    var isDemo = reviews.length === 0;
+    if (isDemo) {
+      reviews = (SITE.reviewExamples || []).filter(function (review) {
+        return isReal(review) && review.demo === true && typeof review.name === "string" && review.name.trim() && typeof review.quote === "string" && review.quote.trim();
+      });
+    }
+    section.querySelectorAll("[data-review-profile]").forEach(function (link) {
+      if (SITE.links.fiverr) link.href = SITE.links.fiverr;
+    });
+    grid.replaceChildren();
+    carousel.hidden = reviews.length === 0;
+    empty.hidden = reviews.length > 0;
+    source.hidden = reviews.length === 0;
+    demoNote.hidden = !isDemo || reviews.length === 0;
+    controls.hidden = reviews.length < 2;
+    if (!reviews.length) return;
+    if (isDemo) {
+      intro.textContent = "A preview of the review experience, with fictional examples that shuffle at random. For authentic client feedback, visit our public Fiverr profile.";
+      carousel.setAttribute("aria-label", "Illustrative review examples");
+    }
 
-    if (!reviews.length) {
-      // no reviews available — show a subtle CTA linking to Fiverr
-      var trust = document.getElementById('trust-bar');
-      if (trust) {
-        var cta = el('div', 'review-cta');
-        cta.innerHTML = '<p>See reviews on <a href="' + SITE.links.fiverr + '" target="_blank" rel="noopener noreferrer">Fiverr</a>.</p>' +
-          '<p>If you want reviews shown here, add a <code>SITE.fiverrReviews</code> array in <code>data/content.js</code> with review objects.</p>';
-        trust.parentNode.insertBefore(cta, trust.nextSibling);
+    reviews.forEach(function (review) {
+      var card = el("figure", "client-review-card");
+      card.setAttribute("role", "group");
+      card.setAttribute("aria-roledescription", "slide");
+      card.setAttribute("aria-hidden", "true");
+      card.inert = true;
+      if (isDemo) card.appendChild(el("p", "review-example-label", "Illustrative example — not a client testimonial"));
+      var rating = Number(review.rating);
+      if (typeof review.rating === "number" && Number.isFinite(rating) && rating >= 1 && rating <= 5) {
+        var score = el("p", "client-review-rating");
+        var stars = el("span", "review-stars");
+        stars.setAttribute("aria-hidden", "true");
+        stars.style.setProperty("--rating-fill", rating / 5 * 100 + "%");
+        var starSvg = '<svg viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9Z"/></svg>';
+        var outline = el("span", "review-stars-outline");
+        outline.innerHTML = starSvg.repeat(5);
+        var filled = el("span", "review-stars-filled");
+        filled.innerHTML = starSvg.repeat(5);
+        stars.appendChild(outline);
+        stars.appendChild(filled);
+        score.appendChild(stars);
+        score.appendChild(el("span", "", rating + " / 5"));
+        score.setAttribute("aria-label", (isDemo ? "Example rating " : "Rated ") + rating + " out of 5");
+        card.appendChild(score);
       }
-      return;
-    }
+      card.appendChild(el("blockquote", "client-review-quote", review.quote.trim()));
+      var author = el("figcaption", "client-review-author");
+      var initial = el("span", "client-review-initial", Array.from(review.name.trim())[0].toUpperCase());
+      initial.setAttribute("aria-hidden", "true");
+      author.appendChild(initial);
+      var identity = el("div", "client-review-identity");
+      identity.appendChild(el("strong", "", review.name.trim()));
+      if (review.role) identity.appendChild(el("span", "", review.role));
+      author.appendChild(identity);
+      card.appendChild(author);
+      grid.appendChild(card);
+    });
 
-    section.hidden = false;
-    if (prev) prev.innerHTML = svg.chevronL;
-    if (next) next.innerHTML = svg.chevronR;
+    var cards = Array.prototype.slice.call(grid.children);
+    var current = -1;
+    var bag = [];
+    var timer;
+    var motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    var paused = motion.matches;
+    var hovered = false;
+    var focused = false;
+    var inViewport = false;
 
-    var index = 0;
-    function show(i) {
-      index = (i + reviews.length) % reviews.length;
-      var t = reviews[index];
-      track.replaceChildren();
-      var article = el("blockquote", "testimonial");
-      article.appendChild(el("q", "", t.quote));
-      var foot = el("footer", "", t.name + (t.role ? " — " + t.role : ""));
-      article.appendChild(foot);
-      if (t.rating) {
-        var rating = el('div', 'rating');
-        rating.textContent = '★'.repeat(Math.max(0, Math.min(5, Math.round(t.rating)))) + ' (' + t.rating + ')';
-        article.appendChild(rating);
+    function nextIndex() {
+      if (!bag.length) {
+        bag = reviews.map(function (_, index) { return index; });
+        for (var index = bag.length - 1; index > 0; index--) {
+          var randomIndex = Math.floor(Math.random() * (index + 1));
+          var previous = bag[index];
+          bag[index] = bag[randomIndex];
+          bag[randomIndex] = previous;
+        }
+        if (bag.length > 1 && bag[0] === current) {
+          var first = bag[0];
+          bag[0] = bag[bag.length - 1];
+          bag[bag.length - 1] = first;
+        }
       }
-      track.appendChild(article);
-      dots.querySelectorAll("button").forEach(function (d, di) {
-        d.setAttribute("aria-current", di === index ? "true" : "false");
-      });
+      return bag.shift();
     }
 
-    dots.replaceChildren();
-    reviews.forEach(function (_, i) {
-      var d = el("button");
-      d.type = "button";
-      d.setAttribute("aria-label", "Show testimonial " + (i + 1));
-      d.addEventListener("click", function () {
-        show(i);
+    function schedule() {
+      window.clearTimeout(timer);
+      if (reviews.length > 1 && !paused && !hovered && !focused && inViewport && !document.hidden) {
+        timer = window.setTimeout(function () {
+          showNext(false);
+        }, 7000);
+      }
+    }
+
+    function showNext(manual) {
+      current = nextIndex();
+      cards.forEach(function (card, index) {
+        var active = index === current;
+        card.classList.toggle("is-active", active);
+        card.setAttribute("aria-hidden", String(!active));
+        card.setAttribute("aria-label", (isDemo ? "Example " : "Review ") + (index + 1) + " of " + cards.length);
+        card.inert = !active;
       });
-      dots.appendChild(d);
+      position.textContent = (isDemo ? "Example " : "Review ") + (current + 1) + " / " + reviews.length;
+      if (manual) announcement.textContent = (isDemo ? "Illustrative example: " : "Review by ") + reviews[current].name + ". " + position.textContent;
+      schedule();
+    }
+
+    function updatePause() {
+      pauseButton.textContent = paused ? "Resume rotation" : "Pause rotation";
+      schedule();
+    }
+
+    pauseButton.addEventListener("click", function () {
+      paused = !paused;
+      updatePause();
     });
-    if (prev) prev.addEventListener("click", function () { show(index - 1); });
-    if (next) next.addEventListener("click", function () { show(index + 1); });
-    section.addEventListener("keydown", function (e) {
-      if (e.key === "ArrowLeft") show(index - 1);
-      if (e.key === "ArrowRight") show(index + 1);
+    shuffleButton.addEventListener("click", function () { showNext(true); });
+    carousel.addEventListener("mouseenter", function () { hovered = true; schedule(); });
+    carousel.addEventListener("mouseleave", function () { hovered = false; schedule(); });
+    carousel.addEventListener("focusin", function () { focused = true; schedule(); });
+    carousel.addEventListener("focusout", function (event) {
+      focused = carousel.contains(event.relatedTarget);
+      schedule();
     });
-    show(0);
+    document.addEventListener("visibilitychange", schedule);
+    motion.addEventListener("change", function () {
+      if (motion.matches) {
+        paused = true;
+        updatePause();
+      }
+    });
+    if ("IntersectionObserver" in window) {
+      var observer = new IntersectionObserver(function (entries) {
+        inViewport = entries[0].isIntersecting;
+        schedule();
+      }, { threshold: 0.15 });
+      observer.observe(carousel);
+    } else {
+      inViewport = true;
+    }
+    showNext(false);
+    updatePause();
+  }
+
+  function initFloatingContact() {
+    var link = document.getElementById("floating-contact");
+    var title = document.getElementById("contact-title");
+    if (link && title) {
+      link.addEventListener("click", function (event) {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        window.requestAnimationFrame(function () {
+          title.focus({ preventScroll: true });
+        });
+      });
+    }
   }
 
   function renderCertificates() {
@@ -565,6 +722,9 @@
     var heading = document.getElementById("map-heading");
     var caption = document.getElementById("map-caption");
     var frame = document.getElementById("map-frame");
+    var localName = document.getElementById("map-local-name");
+    var directions = document.getElementById("map-directions");
+    var openMap = document.getElementById("map-open");
     var mail = document.getElementById("contact-email");
     if (mail) {
       mail.href = "mailto:" + SITE.company.email;
@@ -572,17 +732,21 @@
     }
     if (heading) heading.textContent = loc.label;
     if (caption) caption.textContent = loc.caption;
-    if (frame && loc.embedSrc) {
+    if (localName) localName.textContent = loc.localName || "";
+    var coordinates = loc.latitude + "," + loc.longitude;
+    var destination = encodeURIComponent(coordinates);
+    if (directions) directions.href = "https://www.google.com/maps/dir/?api=1&destination=" + destination;
+    if (openMap) openMap.href = "https://www.google.com/maps/search/?api=1&query=" + destination;
+    if (frame) {
       var iframe = document.createElement("iframe");
-      iframe.src = loc.embedSrc;
+      iframe.src = "https://www.google.com/maps?q=" + destination + "&z=17&hl=en&output=embed";
       iframe.width = 600;
       iframe.height = 450;
       iframe.loading = "lazy";
       iframe.referrerPolicy = "strict-origin-when-cross-origin";
       iframe.allowFullscreen = true;
-      iframe.title = loc.label || "Map of studio location";
-      iframe.style.border = "0";
-      frame.appendChild(iframe);
+      iframe.title = "Location of " + loc.caption + " in Bangladesh";
+      frame.replaceChildren(iframe);
     }
 
     var form = document.getElementById("contact-form");
@@ -702,7 +866,7 @@
   }
 
   function reveal() {
-    var nodes = document.querySelectorAll(".hero-inner, .section, .service-card, .work-card, .process-list li");
+    var nodes = document.querySelectorAll(".hero-inner, .section, .service-card, .process-list li");
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       nodes.forEach(function (n) {
         n.classList.add("is-visible");
@@ -734,13 +898,15 @@
     renderHero();
     renderServices();
     renderWork();
+    renderFeaturedWork();
     initModal();
     renderTrust();
-    renderTestimonials();
+    renderReviews();
     renderCertificates();
     renderProcess();
     renderAbout();
     renderContact();
+    initFloatingContact();
     renderFooter();
     reveal();
   });

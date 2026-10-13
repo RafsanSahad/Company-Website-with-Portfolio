@@ -19,8 +19,9 @@
   <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Noto+Sans+Bengali:wght@400&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/company.css">
+  <link rel="stylesheet" href="css/luxury.css">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -71,7 +72,7 @@
   }
   </script>
 </head>
-<body>
+<body data-page="company">
   <a class="skip-link" href="#main">Skip to main content</a>
 
   <header class="site-header" id="top">
@@ -100,6 +101,10 @@
         <h1 id="hero-title"></h1>
         <p class="lede" id="hero-pitch"></p>
         <div class="hero-actions" id="hero-actions"></div>
+        <div class="hero-colophon">
+          <span>Independent studio. Considered execution.</span>
+          <a href="#services">Explore the practices <span aria-hidden="true">↓</span></a>
+        </div>
       </div>
     </section>
 
@@ -114,9 +119,49 @@
     <section class="section section-alt" id="work" aria-labelledby="work-title">
       <div class="wrap">
         <h2 id="work-title">Work</h2>
-        <p class="section-intro">Selected public work. Case files with PDFs or decks can be attached per project.</p>
-        <div class="filters" id="work-filters" role="tablist" aria-label="Project filters"></div>
+        <p class="section-intro">Explore public projects across animation, video, and software. Open a project for details and original work.</p>
+        <div class="work-toolbar">
+          <div class="filters" id="work-filters" role="group" aria-label="Project filters"></div>
+          <p class="work-status" id="work-status" role="status" aria-live="polite" aria-atomic="true"></p>
+        </div>
         <div class="card-grid work-grid" id="work-grid"></div>
+        <div class="view-all-control" id="view-all-control" hidden>
+          <button type="button" class="btn btn-outline" id="work-toggle" aria-controls="work-grid" aria-expanded="false">View all projects</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt" id="reviews" aria-labelledby="reviews-title">
+      <div class="wrap reviews-layout">
+        <div class="reviews-intro">
+          <p class="eyebrow">The client perspective</p>
+          <h2 id="reviews-title">Client reviews</h2>
+          <p class="section-intro" id="reviews-intro-copy">Good work is a collaboration. Explore client feedback on our public Fiverr profile, with selected testimonials shared here when available.</p>
+          <a class="reviews-contact" href="#contact">Start a conversation <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="reviews-content">
+          <p class="reviews-demo-note" id="reviews-demo-note" hidden>Illustrative examples: these names, quotes, and ratings are fictional, not actual client testimonials.</p>
+          <div class="review-carousel" id="review-carousel" role="region" aria-roledescription="carousel" aria-label="Client reviews" hidden>
+            <div class="client-reviews-grid" id="reviews-grid" aria-live="off"></div>
+            <div class="review-carousel-controls" id="review-carousel-controls">
+              <p class="review-position" id="review-position"></p>
+              <div class="review-carousel-actions">
+                <button type="button" class="btn btn-outline" id="review-pause" aria-controls="reviews-grid">Pause rotation</button>
+                <button type="button" class="btn btn-outline" id="review-shuffle" aria-controls="reviews-grid">Shuffle review <span aria-hidden="true">↝</span></button>
+              </div>
+            </div>
+            <p class="visually-hidden" id="review-announcement" role="status" aria-live="polite" aria-atomic="true"></p>
+          </div>
+          <div class="reviews-empty" id="reviews-empty">
+            <svg class="review-quote-mark" viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M7 27c0-11 5-17 13-19v5c-5 2-7 6-7 10h9v17H7V27Zm24 0c0-11 5-17 13-19v5c-5 2-7 6-7 10h9v17H31V27Z" stroke="currentColor" stroke-width="1.2"/></svg>
+            <p class="eyebrow">Feedback, at the source</p>
+            <h3>Read the client perspective.</h3>
+            <p>Visit our Fiverr profile to explore reviews and feedback on completed work.</p>
+            <a class="btn btn-solid" data-review-profile href="https://www.fiverr.com/users/rafsansahad7" target="_blank" rel="noopener noreferrer">Read reviews on Fiverr <span aria-hidden="true">↗</span></a>
+            <p class="reviews-note">Opens our public Fiverr profile in a new tab.</p>
+          </div>
+          <p class="reviews-source" id="reviews-source" hidden><a data-review-profile href="https://www.fiverr.com/users/rafsansahad7" target="_blank" rel="noopener noreferrer">Visit our Fiverr profile <span aria-hidden="true">↗</span></a></p>
+        </div>
       </div>
     </section>
 
@@ -193,7 +238,7 @@
     <section class="section" id="contact" aria-labelledby="contact-title">
       <div class="wrap contact-layout">
         <div>
-          <h2 id="contact-title">Contact</h2>
+          <h2 id="contact-title" tabindex="-1">Contact</h2>
           <p class="section-intro">Write with a short brief. We reply from the studio inbox.</p>
           <p><a class="mailto" id="contact-email" href="mailto:rafsan.official@rafsanlabs.top">rafsan.official@rafsanlabs.top</a></p>
           <form class="contact-form" id="contact-form" novalidate>
@@ -216,11 +261,21 @@
             <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
           </form>
         </div>
-        <div class="map-block">
-          <h3 id="map-heading"></h3>
-          <p class="map-caption" id="map-caption"></p>
+        <aside class="map-block" aria-labelledby="map-heading">
+          <div class="shop-details">
+            <p class="eyebrow">Visit in person</p>
+            <h3 id="map-heading">Physical shop</h3>
+            <p class="map-caption" id="map-caption">Molla Enterprise · Molla Bostro Biponi</p>
+            <p class="shop-local-name" id="map-local-name" lang="bn">মোল্লা ইন্টারপ্রাইজ</p>
+            <p class="shop-country">Bangladesh</p>
+          </div>
           <div class="map-frame" id="map-frame"></div>
-        </div>
+          <div class="shop-actions">
+            <a class="btn btn-solid" id="map-directions" href="https://www.google.com/maps/dir/?api=1&amp;destination=23.217500578856964%2C89.1652736830444" target="_blank" rel="noopener noreferrer">Get directions <span aria-hidden="true">↗</span></a>
+            <a class="shop-map-link" id="map-open" href="https://www.google.com/maps/search/?api=1&amp;query=23.217500578856964%2C89.1652736830444" target="_blank" rel="noopener noreferrer">Open in Google Maps</a>
+          </div>
+          <p class="map-note">Map not displaying? Use the links above to find the shop.</p>
+        </aside>
       </div>
     </section>
 
@@ -228,7 +283,7 @@
     <section class="section section-alt" id="featured" aria-labelledby="featured-title">
       <div class="wrap">
         <h2 id="featured-title">Featured Work</h2>
-        <p class="section-intro">A shuffled selection from GitHub and studio work.</p>
+        <p class="section-intro">A closer look at selected motion, character design, and public code.</p>
         <div class="card-grid featured-grid" id="featured-grid"></div>
       </div>
     </section>
@@ -245,6 +300,11 @@
       <p><a href="portfolio.html">Visit personal portfolio</a></p>
     </div>
   </footer>
+
+  <a class="floating-contact" id="floating-contact" href="#contact" aria-label="Contact Rafsan Labs">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 11.5a8 8 0 0 1-8 8H5l-3 2v-10a9 9 0 0 1 18 0Z"/><path d="M7 11h.01M11 11h.01M15 11h.01"/></svg>
+    <span class="floating-contact-label" aria-hidden="true">Let's talk</span>
+  </a>
 
   <div class="modal" id="project-modal" hidden>
     <div class="modal-backdrop" data-close-modal></div>

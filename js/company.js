@@ -12,9 +12,11 @@
     film:
       '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 5v14M17 5v14M3 9h4M3 15h4M17 9h4M17 15h4"/></svg>',
     spark:
-      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.6 5.2L19 10l-5.4 1.8L12 17l-1.6-5.2L5 10l5.4-1.8L12 3z"/></svg>',
-    github:
-      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-2.8 17.5c.4.1.6-.2.6-.4v-1.5c-2.5.5-3-1.2-3-1.2-.4-1-1-1.3-1-1.3-.8-.6.1-.6.1-.6.9.1 1.4.9 1.4.9.8 1.4 2.1 1 2.6.8.1-.6.3-1 .6-1.2-2-.2-4.1-1-4.1-4.5 0-1 .4-1.8 1-2.4-.1-.3-.4-1.2.1-2.6 0 0 .8-.2 2.6 1 .8-.2 1.6-.4 2.4-.4s1.6.1 2.4.4c1.8-1.2 2.6-1 2.6-1 .5 1.4.2 2.3.1 2.6.6.6 1 1.4 1 2.4 0 3.6-2.1 4.3-4.1 4.5.3.3.6.9.6 1.8v2.6c0 .2.2.5.6.4A9 9 0 0 0 12 3z"/></svg>'
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.6 5.2L19 10l-5.4 1.8L12 17l-1.6-5.2L5 10l5.4-1.8L12 3z"/><path d="M19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7.7-2z"/></svg>',
+    chevronL:
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>',
+    chevronR:
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>'
   };
 
   var serviceIcons = { "ai-ml": svg.ai, cybersecurity: svg.lock, video: svg.film, animation: svg.spark };
@@ -23,8 +25,9 @@
     fiverr:
       '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3v10H4V8zm5 0h3v2h2V8h3v3h-3v7h-3v-7H9V8zm10.2-2.2A1.8 1.8 0 1 1 16.6 8a1.8 1.8 0 0 1 2.6-2.2z"/></svg>',
     upwork:
-      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h2.4c1.8 3.4 3 6 4.1 6 1 0 1.5-1.2 1.5-3V8H14v3.2c0 3-1.3 5.3-3.6 5.3-1.7 0-3-1.2-4.3-3.4V17H4V8zm12 4.2c1.8 0 3.2 1.3 3.2 3.1S17.8 19.4 16 19.4"/></svg>',
-    github: svg.github,
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h2.4c1.8 3.4 3 6 4.1 6 1 0 1.5-1.2 1.5-3V8H14v3.2c0 3-1.3 5.3-3.6 5.3-1.7 0-3-1.2-4.3-3.4V17H4V8zm12 4.2c1.8 0 3.2 1.3 3.2 3.1S17.8 19 16 19s-3.2-1.3-3.2-3.1 1.4-3.7 3.2-3.7z"/></svg>',
+    github:
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-2.8 17.5c.4.1.6-.2.6-.4v-1.5c-2.5.5-3-1.2-3-1.2-.4-1-1-1.3-1-1.3-.8-.6.1-.6.1-.6.9.1 1.4.9 1.4.9.8 1.4 2.1 1 2.6.8.1-.6.3-1 .6-1.2-2-.2-4.1-1-4.1-4.4 0-1 .4-1.8 1-2.4-.1-.3-.5-1.4.1-2.9 0 0 .8-.3 2.8 1a9.7 9.7 0 0 1 5 0c2-1.3 2.8-1 2.8-1 .6 1.5.2 2.6.1 2.9.6.6 1 1.4 1 2.4 0 3.4-2.1 4.2-4.1 4.4.3.3.6.8.6 1.6v2.3c0 .2.2.5.6.4A9 9 0 0 0 12 3z"/></svg>',
     linkedin:
       '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 10v7M8 7.5h.01M12 17v-4.2a2.2 2.2 0 0 1 4.4 0V17"/></svg>',
     facebook:
@@ -119,12 +122,7 @@
     var actions = document.getElementById("hero-actions");
     if (eyebrow) eyebrow.textContent = c.name;
     if (title) title.textContent = h.headline;
-    if (pitch) {
-      pitch.textContent = c.pitch;
-      // ensure it's centered for long content
-      pitch.style.textAlign = 'center';
-      pitch.style.marginInline = 'auto';
-    }
+    if (pitch) pitch.textContent = c.pitch;
     if (actions) {
       var primary = el("a", "btn btn-solid", h.ctaPrimary.label);
       primary.href = h.ctaPrimary.href;
@@ -295,78 +293,42 @@
     });
   }
 
-  function categoryIcon(id) {
-    switch (id) {
-      case 'ai-ml':
-        return svg.ai;
-      case 'cybersecurity':
-        return svg.lock;
-      case 'video':
-        return svg.film;
-      case 'animation':
-        return svg.spark;
-      case 'code':
-      case 'github':
-        return svg.github;
-      default:
-        return svg.spark;
-    }
-  }
-
   function renderWork() {
     var filters = document.getElementById("work-filters");
     var grid = document.getElementById("work-grid");
     if (!filters || !grid) return;
     var active = "all";
     var projects = SITE.projects.filter(isReal);
+    var VISIBLE_LIMIT = 4;
+    var showAll = false;
+
+    function createThumb(p) {
+      if (p.thumbnail) return null;
+      var wrap = el("div", "work-thumb");
+      wrap.innerHTML = serviceIcons[p.category] || svg.spark;
+      return wrap;
+    }
 
     function paint() {
       grid.replaceChildren();
-      var matches = projects.filter(function (p) {
+      var list = projects.filter(function (p) {
         return active === "all" || p.category === active;
       });
-
-      // If no matches, show a friendly placeholder with an icon and optional link
-      if (matches.length === 0) {
-        var empty = el('div', 'work-card');
-        empty.setAttribute('role','group');
-        empty.appendChild(el('div', 'meta', (function(){
-          var f = SITE.projectFilters.find(function(x){return x.id===active;});
-          return f ? f.label : active;
-        })()));
-        var iconWrap = el('div','service-icon');
-        iconWrap.innerHTML = categoryIcon(active);
-        empty.appendChild(iconWrap);
-        empty.appendChild(el('h3','', 'No public projects yet'));
-        empty.appendChild(el('p','', 'We don\'t have public examples in this category. You can view general work on GitHub or contact us for case studies.'));
-        // provide helpful links
-        var linkRow = el('p');
-        var gh = el('a', 'btn btn-outline', 'View GitHub');
-        gh.href = SITE.links.github || '#';
-        gh.target = '_blank';
-        gh.rel = 'noopener noreferrer';
-        linkRow.appendChild(gh);
-        empty.appendChild(linkRow);
-        grid.appendChild(empty);
-        return;
-      }
-
-      matches.forEach(function (p) {
+      var toShow = showAll ? list : list.slice(0, VISIBLE_LIMIT);
+      toShow.forEach(function (p) {
         var card = el("button", "work-card reveal");
         card.type = "button";
         if (p.thumbnail) {
           var img = document.createElement("img");
           img.src = p.thumbnail;
-          img.alt = p.title + " thumbnail";
+          img.alt = "";
           img.width = 640;
           img.height = 360;
           img.loading = "lazy";
           card.appendChild(img);
         } else {
-          // show subtle icon when no thumbnail
-          var iconWrap = el('div','service-icon');
-          iconWrap.innerHTML = categoryIcon(p.category || p.id || '');
-          card.appendChild(iconWrap);
+          var fallback = createThumb(p);
+          if (fallback) card.appendChild(fallback);
         }
         var cat = SITE.projectFilters.find(function (f) {
           return f.id === p.category;
@@ -379,6 +341,25 @@
         });
         grid.appendChild(card);
       });
+
+      // update / create view-all control
+      var existing = document.getElementById("view-all-control");
+      if (existing) existing.remove();
+      var listLen = list.length;
+      if (listLen > VISIBLE_LIMIT) {
+        var control = el("div", "view-all-control");
+        control.id = "view-all-control";
+        var btn = el("button", "btn btn-outline view-all-btn", showAll ? "View less" : "View all " + (listLen - VISIBLE_LIMIT) + " more");
+        btn.type = "button";
+        btn.addEventListener("click", function () {
+          showAll = !showAll;
+          paint();
+          // move focus back to grid after toggle for accessibility
+          grid.querySelectorAll('.work-card')[0].focus();
+        });
+        control.appendChild(btn);
+        grid.parentNode.appendChild(control);
+      }
     }
 
     SITE.projectFilters.forEach(function (f, i) {
@@ -395,6 +376,7 @@
         });
         btn.classList.add("is-active");
         btn.setAttribute("aria-pressed", "true");
+        showAll = false; // reset when switching filters
         paint();
       });
       filters.appendChild(btn);
@@ -428,30 +410,59 @@
     var dots = document.getElementById("testimonial-dots");
     var prev = document.getElementById("testimonial-prev");
     var next = document.getElementById("testimonial-next");
-    var items = (SITE.testimonials || []).filter(function (t) {
-      return isReal(t) && t.quote && t.name;
+
+    // prefer explicit fiverrReviews (to avoid scraping). SITE.fiverrReviews should be an array of {name, role, quote, rating}
+    var reviews = (SITE.fiverrReviews || []).filter(function (r) {
+      return r && r.quote && r.name;
     });
-    if (!section || !items.length) return;
+
+    // fallback to SITE.testimonials
+    if (!reviews.length) {
+      reviews = (SITE.testimonials || []).filter(function (t) {
+        return isReal(t) && t.quote && t.name;
+      });
+    }
+
+    if (!section) return;
+
+    if (!reviews.length) {
+      // no reviews available — show a subtle CTA linking to Fiverr
+      var trust = document.getElementById('trust-bar');
+      if (trust) {
+        var cta = el('div', 'review-cta');
+        cta.innerHTML = '<p>See reviews on <a href="' + SITE.links.fiverr + '" target="_blank" rel="noopener noreferrer">Fiverr</a>.</p>' +
+          '<p>If you want reviews shown here, add a <code>SITE.fiverrReviews</code> array in <code>data/content.js</code> with review objects.</p>';
+        trust.parentNode.insertBefore(cta, trust.nextSibling);
+      }
+      return;
+    }
+
     section.hidden = false;
     if (prev) prev.innerHTML = svg.chevronL;
     if (next) next.innerHTML = svg.chevronR;
 
     var index = 0;
     function show(i) {
-      index = (i + items.length) % items.length;
-      var t = items[index];
+      index = (i + reviews.length) % reviews.length;
+      var t = reviews[index];
       track.replaceChildren();
       var article = el("blockquote", "testimonial");
       article.appendChild(el("q", "", t.quote));
       var foot = el("footer", "", t.name + (t.role ? " — " + t.role : ""));
       article.appendChild(foot);
+      if (t.rating) {
+        var rating = el('div', 'rating');
+        rating.textContent = '★'.repeat(Math.max(0, Math.min(5, Math.round(t.rating)))) + ' (' + t.rating + ')';
+        article.appendChild(rating);
+      }
       track.appendChild(article);
       dots.querySelectorAll("button").forEach(function (d, di) {
         d.setAttribute("aria-current", di === index ? "true" : "false");
       });
     }
 
-    items.forEach(function (_, i) {
+    dots.replaceChildren();
+    reviews.forEach(function (_, i) {
       var d = el("button");
       d.type = "button";
       d.setAttribute("aria-label", "Show testimonial " + (i + 1));

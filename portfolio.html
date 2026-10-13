@@ -21,637 +21,992 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
   <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
   <style>
-    /* Modern small animations and view-all button styles */
-    .portfolio-card{
-      transition: transform 320ms cubic-bezier(.2,.9,.2,1), box-shadow 320ms ease, opacity 320ms ease;
-      will-change: transform, opacity;
-      transform-origin: center bottom;
-      opacity: 1;
+    :root {
+      --bg: #f4f7fb;
+      --panel: rgba(255, 255, 255, 0.88);
+      --panel-strong: #ffffff;
+      --text: #101827;
+      --muted: #58657a;
+      --line: rgba(15, 23, 42, 0.08);
+      --primary: #0f6fff;
+      --primary-2: #3ec6ff;
+      --primary-dark: #0a4ab5;
+      --shadow: 0 18px 40px rgba(12, 20, 38, 0.12);
+      --radius: 22px;
+      --success: #1dbf73;
     }
-    .portfolio-card:hover{
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 18px 40px rgba(6,15,30,0.12);
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(62,198,255,0.10), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(15,111,255,0.10), transparent 25%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.6;
     }
-    /* Hidden cards (collapsed state) */
-    .portfolio-card.hidden{
-      opacity: 0;
-      transform: translateY(12px) scale(0.995);
-      pointer-events: none;
-      height: 0 !important;
-      margin: 0 !important;
-      padding: 0 !important;
+
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+    ul { list-style: none; padding: 0; margin: 0; }
+
+    .container {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .company-banner {
+      margin: 0;
+      text-align: center;
+      background: #09121d;
+      color: #ebf4ff;
+      padding: 0.7rem 1rem;
+      font-size: 0.92rem;
+      letter-spacing: 0.02em;
+    }
+    .company-banner a {
+      color: #7dc7ff;
+      font-weight: 700;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+      background: rgba(244,247,251,0.72);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 78px;
+      gap: 22px;
+    }
+
+    .logo a {
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--text);
+    }
+
+    .nav ul {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .nav a {
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+    .nav a:hover { color: var(--primary); }
+
+    .nav-toggle {
+      display: none;
+      background: transparent;
+      border: 0;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    .nav-toggle span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      margin: 5px auto;
+      background: var(--text);
+      border-radius: 99px;
+    }
+
+    .hero {
+      padding: 4.5rem 0 2.5rem;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      align-items: center;
+      gap: 2.2rem;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(15,111,255,0.09);
+      color: var(--primary-dark);
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      margin: 0 0 1rem;
+      font-size: clamp(2.6rem, 4vw, 5rem);
+      line-height: 1.02;
+      letter-spacing: -0.07em;
+    }
+
+    .highlight {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-copy p {
+      max-width: 620px;
+      color: var(--muted);
+      font-size: 1.06rem;
+      margin: 0 0 1.5rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-bottom: 1.6rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      min-height: 48px;
+      padding: 0.8rem 1.35rem;
+      border-radius: 999px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+      border: 1px solid transparent;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+      color: white;
+      box-shadow: 0 12px 26px rgba(15,111,255,0.24);
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.7);
+      color: var(--text);
+      border-color: var(--line);
+    }
+
+    .hero-metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+    }
+
+    .metric {
+      min-width: 120px;
+      padding: 0.9rem 1rem;
+      background: rgba(255,255,255,0.54);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+    .metric strong {
+      display: block;
+      font-size: 1.4rem;
+      letter-spacing: -0.05em;
+      color: var(--text);
+    }
+    .metric span {
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .profile-panel {
+      position: relative;
+      background: linear-gradient(180deg, rgba(16,24,39,0.96), rgba(14,49,108,0.92));
+      border-radius: 30px;
+      overflow: hidden;
+      min-height: 520px;
+      box-shadow: 0 25px 60px rgba(13, 25, 52, 0.18);
+    }
+
+    .profile-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(94,214,255,0.45), transparent 30%);
+    }
+
+    .profile-content {
+      position: relative;
+      z-index: 1;
+      padding: 1.4rem;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 1rem;
+    }
+
+    .profile-card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 22px;
+      padding: 1rem;
+      color: white;
+      backdrop-filter: blur(8px);
+    }
+    .profile-card small {
+      display: block;
+      color: rgba(255,255,255,0.72);
+      margin-bottom: 0.35rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .profile-card strong {
+      font-size: 1.25rem;
+      letter-spacing: -0.03em;
+    }
+    .profile-card p {
+      margin: 0.35rem 0 0;
+      color: rgba(255,255,255,0.80);
+    }
+
+    .section {
+      padding: 5rem 0;
+    }
+    .section-heading {
+      max-width: 720px;
+      margin: 0 auto 2.3rem;
+      text-align: center;
+    }
+    .section-heading .eyebrow {
+      margin: 0 auto 0.9rem;
+    }
+    .section-heading h2 {
+      margin: 0;
+      font-size: clamp(2rem, 3vw, 3rem);
+      letter-spacing: -0.06em;
+    }
+    .section-heading p {
+      margin: 0.8rem auto 0;
+      color: var(--muted);
+      max-width: 620px;
+    }
+
+    .services-grid,
+    .portfolio-grid,
+    .reviews-grid,
+    .certificates-grid {
+      display: grid;
+      gap: 1.2rem;
+    }
+
+    .services-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .service-card {
+      background: rgba(255,255,255,0.72);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+    .service-icon {
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(15,111,255,0.12), rgba(62,198,255,0.14));
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+    .service-icon svg {
+      width: 26px;
+      height: 26px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .service-card h3 {
+      margin: 0 0 0.4rem;
+      font-size: 1.2rem;
+      letter-spacing: -0.04em;
+    }
+    .service-card p {
+      margin: 0;
+      color: var(--muted);
+    }
+    .service-card ul {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .service-card li {
+      padding: 0.35rem 0.65rem;
+      border-radius: 999px;
+      background: rgba(15,111,255,0.06);
+      color: var(--primary-dark);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .portfolio-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .portfolio-card {
+      background: rgba(255,255,255,0.78);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 0;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transform: translateY(0);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+      cursor: pointer;
+      text-align: left;
+    }
+    .portfolio-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 22px 44px rgba(17,24,39,0.15);
+    }
+    .portfolio-thumb {
+      position: relative;
+      height: 220px;
+      background: linear-gradient(135deg, rgba(15,111,255,0.10), rgba(62,198,255,0.08));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--line);
       overflow: hidden;
     }
-    .portfolio-controls{display:flex;justify-content:center;margin-top:1.25rem}
-    .view-all-btn{
-      background: linear-gradient(135deg,#0066ff 0%,#00c6ff 100%);
-      color:#fff;border:none;padding:0.7rem 1.2rem;border-radius:999px;font-weight:600;cursor:pointer;box-shadow:0 8px 20px rgba(3,10,30,0.12);
-      transition:transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+    .portfolio-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
-    .view-all-btn:focus{outline:3px solid rgba(0,118,255,0.18)}
-    .view-all-btn[aria-expanded="true"]{background:linear-gradient(135deg,#222bff 0%,#00e3ff 100%)}
-    @media (prefers-reduced-motion: reduce){
-      .portfolio-card, .view-all-btn{transition:none}
+    .portfolio-thumb .fallback-icon {
+      width: 74px;
+      height: 74px;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      background: rgba(15,111,255,0.08);
+      color: var(--primary);
+    }
+    .portfolio-thumb .fallback-icon svg {
+      width: 34px;
+      height: 34px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .portfolio-body {
+      padding: 1.2rem 1.1rem 1.4rem;
+    }
+    .portfolio-tag {
+      display: inline-block;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--primary-dark);
+      background: rgba(15,111,255,0.07);
+      border-radius: 999px;
+      padding: 0.4rem 0.65rem;
+    }
+    .portfolio-body h3 {
+      margin: 0.8rem 0 0.4rem;
+      font-size: 1.3rem;
+      letter-spacing: -0.04em;
+    }
+    .portfolio-body p {
+      margin: 0;
+      color: var(--muted);
+    }
+    .portfolio-card.hidden {
+      display: none;
+    }
+
+    .portfolio-controls {
+      display: flex;
+      justify-content: center;
+      margin-top: 1.6rem;
+    }
+    .view-all-btn {
+      border: 1px solid rgba(15,111,255,0.2);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+      color: white;
+      box-shadow: 0 12px 24px rgba(15,111,255,0.2);
+    }
+
+    .reviews-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .review-card {
+      background: rgba(255,255,255,0.8);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 1.3rem;
+      box-shadow: var(--shadow);
+    }
+    .stars {
+      color: #ffb400;
+      font-size: 1rem;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.7rem;
+    }
+    .review-card blockquote {
+      margin: 0 0 1rem;
+      color: var(--text);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+    .reviewer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+      border-top: 1px solid var(--line);
+      padding-top: 0.85rem;
+    }
+    .reviewer strong {
+      color: var(--text);
+    }
+
+    .certificates-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .cert-card {
+      background: rgba(255,255,255,0.8);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .cert-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      background: #eef3f8;
+    }
+    .cert-content {
+      padding: 1rem 1.05rem 1.2rem;
+    }
+    .cert-content h3 {
+      margin: 0 0 0.35rem;
+      font-size: 1.08rem;
+      letter-spacing: -0.03em;
+    }
+    .cert-content p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    footer {
+      background: #09121d;
+      color: rgba(255,255,255,0.82);
+      padding: 2rem 0 2.4rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-links a {
+      color: rgba(255,255,255,0.75);
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 980px) {
+      .hero-inner,
+      .services-grid,
+      .portfolio-grid,
+      .reviews-grid,
+      .certificates-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hero-inner { grid-template-columns: 1fr; }
+      .profile-panel { min-height: 420px; }
+    }
+
+    @media (max-width: 720px) {
+      .nav-toggle { display: block; }
+      .nav {
+        position: absolute;
+        left: 16px;
+        right: 16px;
+        top: calc(100% + 8px);
+        background: rgba(255,255,255,0.96);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+        padding: 0.8rem;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-8px);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+      }
+      .nav.open {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+      }
+      .nav ul {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .services-grid,
+      .portfolio-grid,
+      .reviews-grid,
+      .certificates-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero { padding-top: 3rem; }
+      .section { padding: 4rem 0; }
     }
   </style>
 </head>
 <body>
-  <a href="#main-content" class="skip-link">Skip to main content</a>
   <p class="company-banner">
     <a href="index.html">Rafsan Labs (Company Site)</a>
   </p>
 
   <header>
-    <div class="container header-container">
+    <div class="container header-inner">
       <div class="logo">
         <a href="#hero">MyPortfolio</a>
       </div>
       <nav class="nav" id="nav-menu" aria-label="Main navigation">
         <ul>
-          <li><a href="index.html">Rafsan Labs (Company Site)</a></li>
+          <li><a href="index.html">Rafsan Labs</a></li>
           <li><a href="#hero">Home</a></li>
-          <li><a href="#about">About Me</a></li>
+          <li><a href="#about">About</a></li>
           <li><a href="#services">Services</a></li>
           <li><a href="#portfolio">Portfolio</a></li>
-          <li><a href="#testimonials">Testimonials</a></li>
+          <li><a href="#reviews">Reviews</a></li>
           <li><a href="#certificates">Certificates</a></li>
         </ul>
       </nav>
-      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
-        <span class="hamburger"></span>
-        <span class="hamburger"></span>
-        <span class="hamburger"></span>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
       </button>
     </div>
   </header>
-  <!-- Floating Navigation -->
-  <nav class="floating-nav" id="floating-nav">
-    <a href="#hero" class="floating-nav-item" data-tooltip="Home">
-      <i class="fas fa-home"></i>
-    </a>
-    <a href="#about" class="floating-nav-item" data-tooltip="About">
-      <i class="fas fa-user"></i>
-    </a>
-    <a href="#services" class="floating-nav-item" data-tooltip="Services">
-      <i class="fas fa-cogs"></i>
-    </a>
-    <a href="#portfolio" class="floating-nav-item" data-tooltip="Portfolio">
-      <i class="fas fa-briefcase"></i>
-    </a>
-    <a href="#testimonials" class="floating-nav-item" data-tooltip="Testimonials">
-      <i class="fas fa-comments"></i>
-    </a>
-    <a href="#certificates" class="floating-nav-item" data-tooltip="Certificates">
-      <i class="fas fa-certificate"></i>
-    </a>
-  </nav>
-  <main id="main-content">
-    <section id="hero" class="hero-section reveal" data-aos="fade-in">
-      <div class="hero-content">
-        <div class="hero-text" data-aos="fade-right" data-aos-delay="200">
-          <h1 class="hero-name">MD Sahad Hossain (Rafsan)</h1>
-          <h2 class="hero-tagline">I'm a <span class="typing" aria-live="polite">Video Editor, Animator, Coder & Cybersecurity Expert</span></h2>
-          <div class="hero-buttons" data-aos="fade-up" data-aos-delay="400">
-            <a href="#portfolio" class="btn btn-primary">View Portfolio</a>
+
+  <main id="hero">
+    <section class="hero">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <div class="eyebrow">Creative Portfolio</div>
+          <h1>Crafting <span class="highlight">visual stories</span> with strategy, motion, and code.</h1>
+          <p>
+            I create high-impact video edits, motion graphics, branding visuals, and digital experiences for businesses, creators, and modern brands that want their story to stand out.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#portfolio">View My Work</a>
+            <a class="btn btn-secondary" href="index.html">Meet Rafsan Labs</a>
           </div>
-          <div class="hero-fiverr" style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:center;" data-aos="fade-up" data-aos-delay="600">
-            <a href="https://www.fiverr.com/users/rafsansahad7" target="_blank" rel="noopener" class="fiverr-badge" aria-label="Visit my Fiverr profile">
-              <img src="https://cdn.worldvectorlogo.com/logos/fiverr-1.svg" alt="Fiverr logo" style="height:28px;vertical-align:middle;margin-right:8px;"> Fiverr
-            </a>
-            <a href="https://www.linkedin.com/in/rafsan-sahad/" target="_blank" rel="noopener" class="linkedin-badge" aria-label="Visit my LinkedIn profile">
-              <img src="https://cdn.worldvectorlogo.com/logos/linkedin-icon-2.svg" alt="LinkedIn logo" style="height:28px;vertical-align:middle;margin-right:8px;"> LinkedIn
-            </a>
-            <a href="https://www.upwork.com/freelancers/~0189661ee7552e6db1" target="_blank" rel="noopener" class="upwork-badge" aria-label="Visit my Upwork profile">
-              <img src="https://cdn.worldvectorlogo.com/logos/upwork.svg" alt="Upwork logo" style="height:28px;vertical-align:middle;margin-right:8px;"> Upwork
-            </a>
-            <a href="https://github.com/RafsanSahad" target="_blank" rel="noopener" class="github-badge" aria-label="Visit my GitHub profile">
-              <img src="https://cdn.worldvectorlogo.com/logos/github-icon-1.svg" alt="GitHub logo" style="height:28px;vertical-align:middle;margin-right:8px;"> GitHub
-            </a>
-            <a href="https://www.facebook.com/itsRafsanSahad" target="_blank" rel="noopener" class="facebook-badge" aria-label="Visit my Facebook profile"> 
-              <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook logo" style="height:28px;vertical-align:middle;margin-right:8px;"> Faceboo[...]
-            </a>
-          </div>
-        </div>
-        <div class="hero-image-wrapper">
-          <img src="assets/img/profile.jpg" alt="Profile picture of MD Sahad Hossain (Rafsan)" class="hero-image" width="400" height="400" />
-        </div>
-      </div>
-    </section>
-    <section id="about" class="about-section reveal" data-aos="fade-up">
-      <h2 class="about-heading" data-aos="fade-down">About Me</h2>
-      <div class="about-content">
-        <div class="about-text" data-aos="fade-right">
-          <p>Hello! I'm Rafsan, a passionate and versatile professional with expertise in coding, video editing, animation, and cybersecurity. I thrive on creative challenges and technical proble[...]
-          <p>With years of experience as a freelancer, I have worked with clients worldwide on platforms like Fiverr and Upwork, providing top-notch services in video production, motion graphics,[...]
-          <p>Whether it's crafting compelling animations, editing cinematic videos, building secure systems, or writing efficient code, I bring dedication, creativity, and professionalism to ever[...]
-          <hr>
-          <h3>Professional Summary</h3>
-          <p>I'm a professional freelancer specialising in video editing, animation, penetration testing, and coding. A fast learner with a strong work ethic, I'm always seeking knowledge and cha[...]
-          <p><strong>Email:</strong> mdshadh@gmail.com<br>
-          <strong>Phone:</strong> +8801758453814</p>
-        </div>
-        <div class="about-skills">
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="100">C</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="100">C++</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="150">Python</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="150">HTML</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="150">SQL</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="150">Python Automation</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="200">VFX</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="200">Blender</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="200">3D</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="200">Unreal Engine</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="200">Motion Graphics</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="200">Graphic Design</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="700">MS Office Application</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="200">Google Fundamentals of digital marketing</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="200">Character Design</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="200">Google Analytics</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="200">Google Ads</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="300">App Development</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="350">Game Development</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="400">Adobe After Effects</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="450">Adobe Premiere Pro</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="500">Adobe Animate</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="550">Adobe Character Animator</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="600">Adobe Photoshop</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="650">Adobe Illustrator</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="650">Ai Prompt</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="750">Creativity</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="800">Critical Thinking</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="850">Leadership</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="900">Cyber Security</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="700">Penetration</span>
-          <span class="skill-badge" data-aos="fade-up" data-aos-delay="700">Networking</span>
-          
-        </div>
-      </div>
-    </section>
-    <!-- CV Experience Section -->
-    <section id="experience" class="experience-section reveal" data-aos="fade-up">
-      <h2 class="experience-heading" data-aos="fade-down">Experience</h2>
-      <ul class="experience-list" data-aos="fade-up" data-aos-delay="200">
-        <li><strong>Fiverr</strong> (2020 - Present): Video Editor, Coder, Animator, Motion Graphic</li>
-        <li><strong>Upwork</strong> (2020 - Present): Video Editor, Coder, Animator, Motion Graphic</li>
-        <li><strong>Hack The Box</strong> (2023 - Present): Penetration Tester & Ethical Hacker</li>
-        <li><strong>Cod3rio</strong> (2022 - 2024): Animator and Cyber Security Specialist</li>
-        <li><strong>Freelance Editor and Bug Bounty Hunter</strong></li>
-      </ul>
-    </section>
-    <!-- CV Languages & Expertise Section -->
-    <section id="languages" class="languages-section reveal" data-aos="fade-up">
-      <h2 class="languages-heading" data-aos="fade-down">Languages & Expertise</h2>
-      <div class="expertise-grid">
-        <div class="expertise-card" data-aos="zoom-in" data-aos-delay="100">
-          <h3>Languages</h3>
-          <ul class="languages-list">
-            <li data-aos="fade-up" data-aos-delay="150">Bangla (Native)</li>
-            <li data-aos="fade-up" data-aos-delay="200">English (Professional)</li>
-            <li data-aos="fade-up" data-aos-delay="250">Hindi (Conversational)</li>
-            <li data-aos="fade-up" data-aos-delay="300">Urdu (Conversational)</li>
-            <li data-aos="fade-up" data-aos-delay="350">Nepali (Conversational)</li>
-            <li data-aos="fade-up" data-aos-delay="350">Japanese (Basic)</li>
-          </ul>
-        </div>
-        <div class="expertise-card" data-aos="zoom-in" data-aos-delay="200">
-          <h3>Technical Expertise</h3>
-          <ul class="expertise-list">
-            <li data-aos="fade-up" data-aos-delay="250">Video Production & Editing</li>
-            <li data-aos="fade-up" data-aos-delay="300">2D/3D Animation</li>
-            <li data-aos="fade-up" data-aos-delay="600">Graphic Design</li>
-            <li data-aos="fade-up" data-aos-delay="350">Motion Graphics</li>
-            <li data-aos="fade-up" data-aos-delay="400">Software Development</li>
-            <li data-aos="fade-up" data-aos-delay="450">Cybersecurity & Ethical Hacking</li>
-            <li data-aos="fade-up" data-aos-delay="500">Penetration Testing</li>
-            <li data-aos="fade-up" data-aos-delay="550">System Administration</li>
-            <li data-aos="fade-up" data-aos-delay="600">Cross-Platform Development</li>
-            <li data-aos="fade-up" data-aos-delay="650">Google Fundamentals of digital marketing</li>
-            <li data-aos="fade-up" data-aos-delay="700">Google Ads</li>
-            <li data-aos="fade-up" data-aos-delay="750">Google Analytics</li>
-            <li data-aos="fade-up" data-aos-delay="600">Linux Terminal</li>
-            <li data-aos="fade-up" data-aos-delay="600">Windows Terminal</li>
-            <li data-aos="fade-up" data-aos-delay="600">MacOS Terminal</li>
-            <li data-aos="fade-up" data-aos-delay="600">Parrot OS</li>
-            <li data-aos="fade-up" data-aos-delay="600">Kali Linux</li>
-            <li data-aos="fade-up" data-aos-delay="600">Android</li>
-            <li data-aos="fade-up" data-aos-delay="600">iOS</li>
-            <li data-aos="fade-up" data-aos-delay="600">Raspberry Pi</li>
-            
-          </ul>
-        </div>
-        <div class="expertise-card" data-aos="zoom-in" data-aos-delay="300">
-          <h3>Tools & Technologies</h3>
-          <ul class="tools-list">
-            <li data-aos="fade-up" data-aos-delay="350">Adobe Creative Suite</li>
-            <li data-aos="fade-up" data-aos-delay="350">Unreal Engine</li>
-            <li data-aos="fade-up" data-aos-delay="350">Blender</li>
-            <li data-aos="fade-up" data-aos-delay="350">Photoshop</li>
-            <li data-aos="fade-up" data-aos-delay="350">Illustrator</li>
-            <li data-aos="fade-up" data-aos-delay="350">After Effects</li>
-            <li data-aos="fade-up" data-aos-delay="350">Premiere Pro</li>
-            <li data-aos="fade-up" data-aos-delay="400">Programming Languages (C,C++, Python)</li>
-            <li data-aos="fade-up" data-aos-delay="400">HTML</li>
-            <li data-aos="fade-up" data-aos-delay="400">SQL</li>
-            <li data-aos="fade-up" data-aos-delay="400">Python Automation</li>
-            <li data-aos="fade-up" data-aos-delay="400">Google Fundamentals of digital marketing</li>
-            <li data-aos="fade-up" data-aos-delay="400">Google Ads</li>
-            <li data-aos="fade-up" data-aos-delay="400">Google Analytics</li>
-            <li data-aos="fade-up" data-aos-delay="400">Google Search Console</li>
-            <li data-aos="fade-up" data-aos-delay="450">Operating Systems (Windows, Linux, MacOS, Android, iOS)</li>
-            <li data-aos="fade-up" data-aos-delay="450">OS Terminal</li>
-            <li data-aos="fade-up" data-aos-delay="500">Security Tools (Parrot OS, Kali Linux)</li>
-            <li data-aos="fade-up" data-aos-delay="550">Mobile Platforms (Android, iOS)</li>
-            <li data-aos="fade-up" data-aos-delay="600">Development Tools (Raspberry Pi, Git)</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-    <section id="services" class="services-section reveal" data-aos="fade-up">
-      <h2 class="services-heading" data-aos="fade-down">Services</h2>
-      <div class="services-grid">
-        <div class="service-card" data-aos="flip-left" data-aos-delay="100">
-          <div class="service-icon" aria-hidden="true">🎬</div>
-          <h3 class="service-title">Video Editing</h3>
-          <p class="service-desc">Professional video editing for commercials, YouTube, social media, and more. Cinematic cuts, color grading, and sound design.</p>
-        </div>
-        <div class="service-card" data-aos="flip-left" data-aos-delay="200">
-          <div class="service-icon" aria-hidden="true">✨</div>
-          <h3 class="service-title">Animation & Motion Graphics</h3>
-          <p class="service-desc">2D/3D animation, explainer videos, logo animations, and engaging motion graphics for brands and businesses.</p>
-        </div>
-        <div class="service-card" data-aos="flip-left" data-aos-delay="300">
-          <div class="service-icon" aria-hidden="true">🛡️</div>
-          <h3 class="service-title">Cybersecurity & Penetration Testing</h3>
-          <p class="service-desc">Ethical hacking, vulnerability assessment, and security consulting to protect your digital assets.</p>
-        </div>
-        <div class="service-card" data-aos="flip-left" data-aos-delay="400">
-          <div class="service-icon" aria-hidden="true">💻</div>
-          <h3 class="service-title">Coding & App Development</h3>
-          <p class="service-desc">Custom software, automation scripts, and application development in C++, Python, and more.</p>
-        </div>
-      </div>
-    </section>
-    <section id="portfolio" class="portfolio-section reveal" data-aos="fade-up">
-      <h2 class="portfolio-heading" data-aos="fade-down">Portfolio</h2>
-      <div class="portfolio-filters" role="tablist" aria-label="Portfolio filters" data-aos="fade-up" data-aos-delay="200">
-        <button class="filter-btn active" data-filter="all" aria-pressed="true">All</button>
-        <button class="filter-btn" data-filter="animation" aria-pressed="false">Animation</button>
-        <button class="filter-btn" data-filter="design" aria-pressed="false">Design</button>
-        <button class="filter-btn" data-filter="code" aria-pressed="false">Code</button>
-      </div>
-      <div class="portfolio-grid">
-        <!-- Fiverr Portfolio -->
-        <div class="portfolio-card" data-category="all" data-aos="zoom-in" data-aos-delay="100">
-          <div class="portfolio-img-wrapper">
-            <img src="https://cdn.worldvectorlogo.com/logos/fiverr-1.svg" alt="Fiverr Portfolio" class="portfolio-img" />
-            <div class="portfolio-overlay">
-              <div class="portfolio-links">
-                <a href="https://www.fiverr.com/users/rafsansahad7/portfolio?roleIds=" target="_blank" rel="noopener noreferrer" class="portfolio-link">
-                  <i class="fab fa-fiverr"></i> View Fiverr Portfolio
-                </a>
-              </div>
+          <div class="hero-metrics">
+            <div class="metric">
+              <strong>5+</strong>
+              <span>Years building creative works</span>
             </div>
-          </div>
-          <h3 class="portfolio-title">Fiverr Portfolio</h3>
-          <p class="portfolio-description">Check out my professional services in video editing, animation, and more on Fiverr</p>
-          <div class="portfolio-tech">
-            <span class="tech-badge">Video Editing</span>
-            <span class="tech-badge">Animation</span>
-            <span class="tech-badge">Motion Graphics</span>
+            <div class="metric">
+              <strong>150+</strong>
+              <span>Projects delivered</span>
+            </div>
+            <div class="metric">
+              <strong>5★</strong>
+              <span>Client satisfaction</span>
+            </div>
           </div>
         </div>
 
-        <!-- Portfolio Animation -->
-        <div class="portfolio-card" data-category="animation" data-aos="zoom-in" data-aos-delay="100">
-          <div class="portfolio-img-wrapper">
-            <img src="https://i.ytimg.com/vi/Jv_u1frLJTQ/maxresdefault.jpg" alt="Portfolio Animation" class="portfolio-img" />
-            <div class="portfolio-overlay">
-              <div class="portfolio-links">
-                <a href="https://youtu.be/Jv_u1frLJTQ" target="_blank" rel="noopener noreferrer" class="portfolio-link">
-                  <i class="fab fa-youtube"></i> Watch
-                </a>
-              </div>
+        <div class="profile-panel" aria-label="Profile summary card">
+          <div class="profile-content">
+            <div class="profile-card">
+              <small>Founder / Creative Lead</small>
+              <strong>MD Sahad Hossain (Rafsan)</strong>
+              <p>Video editor • motion designer • software developer • cybersecurity practitioner</p>
+            </div>
+            <div class="profile-card">
+              <small>Specialties</small>
+              <strong>Ads, product videos, animation, automation</strong>
+              <p>Helping brands turn ideas into sharp, conversion-focused creative.</p>
             </div>
           </div>
-          <h3 class="portfolio-title">Portfolio Animation</h3>
-          <p class="portfolio-description">Showcase of my animation and motion graphics work</p>
-          <div class="portfolio-tech">
-            <span class="tech-badge">After Effects</span>
-            <span class="tech-badge">Motion Graphics</span>
-            <span class="tech-badge">Animation</span>
-          </div>
-        </div>
-
-        <!-- Animation Projects -->
-        <div class="portfolio-card" data-category="animation" data-aos="zoom-in" data-aos-delay="200">
-          <div class="portfolio-img-wrapper">
-            <img src="https://live.staticflickr.com/65535/53319919089_3WooFE.jpg" alt="Animation Projects" class="portfolio-img" />
-            <div class="portfolio-overlay">
-              <div class="portfolio-links">
-                <a href="https://flic.kr/s/aHBqjzKSvi" target="_blank" rel="noopener noreferrer" class="portfolio-link">
-                  <i class="fas fa-photo-video"></i> View Animation Gallery
-                </a>
-              </div>
-            </div>
-          </div>
-          <h3 class="portfolio-title">Animation Projects</h3>
-          <p class="portfolio-description">Collection of animation and motion graphics work</p>
-          <div class="portfolio-tech">
-            <span class="tech-badge">After Effects</span>
-            <span class="tech-badge">Motion Graphics</span>
-            <span class="tech-badge">Animation</span>
-          </div>
-        </div>
-
-        <!-- Character Design -->
-        <div class="portfolio-card" data-category="design" data-aos="zoom-in" data-aos-delay="300">
-          <div class="portfolio-img-wrapper">
-            <img src="https://live.staticflickr.com/65535/53319919089_3WooFE.jpg" alt="Character Design Portfolio" class="portfolio-img" />
-            <div class="portfolio-overlay">
-              <div class="portfolio-links">
-                <a href="https://flic.kr/s/aHBqjzEsxq" target="_blank" rel="noopener noreferrer" class="portfolio-link">
-                  <i class="fas fa-paint-brush"></i> View Character Designs
-                </a>
-              </div>
-            </div>
-          </div>
-          <h3 class="portfolio-title">Character Design</h3>
-          <p class="portfolio-description">Collection of character designs and illustrations</p>
-          <div class="portfolio-tech">
-            <span class="tech-badge">Illustrator</span>
-            <span class="tech-badge">Character Design</span>
-            <span class="tech-badge">2D Art</span>
-          </div>
-        </div>
-
-        <!-- GitHub Projects -->
-        <div class="portfolio-card" data-category="code" data-aos="zoom-in" data-aos-delay="400">
-          <div class="portfolio-img-wrapper">
-            <img src="https://opengraph.githubassets.com/RafsanSahad" alt="GitHub Projects" class="portfolio-img" />
-            <div class="portfolio-overlay">
-              <div class="portfolio-links">
-                <a href="https://github.com/RafsanSahad" target="_blank" rel="noopener noreferrer" class="portfolio-link">
-                  <i class="fab fa-github"></i> View Projects
-                </a>
-              </div>
-            </div>
-          </div>
-          <h3 class="portfolio-title">GitHub Projects</h3>
-          <p class="portfolio-description">Collection of coding and development projects</p>
-          <div class="portfolio-tech">
-            <span class="tech-badge">Python</span>
-            <span class="tech-badge">C++</span>
-            <span class="tech-badge">Web Development</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="portfolio-controls">
-        <button id="viewAllBtn" class="view-all-btn" aria-expanded="false" aria-controls="portfolio" aria-label="View all projects">View all projects</button>
-      </div>
-
-    </section>
-    <!-- Testimonials Section -->
-    <section class="testimonials-section" id="testimonials" data-aos="fade-up">
-      <h2 class="testimonials-heading" data-aos="fade-down">Client Reviews</h2>
-      <div class="testimonials-carousel" data-aos="fade-up" data-aos-delay="200">
-        <div class="testimonial-slide active">
-          <p class="testimonial-quote">"Excellent work! Very professional and delivered exactly what I needed. Will definitely work with again."</p>
-          <div class="testimonial-profile">
-            <img src="https://fiverr-res.cloudinary.com/t_profile_original,q_auto,f_auto/attachments/profile/photo/1234567890abcdef" alt="Client" class="testimonial-img">
-            <div>
-              <h4 class="testimonial-name">John Doe</h4>
-              <div class="testimonial-rating">★★★★★</div>
-            </div>
-          </div>
-        </div>
-        <div class="testimonial-slide">
-          <p class="testimonial-quote">"Great communication and fast delivery. The quality of work exceeded my expectations."</p>
-          <div class="testimonial-profile">
-            <img src="https://fiverr-res.cloudinary.com/t_profile_original,q_auto,f_auto/attachments/profile/photo/0987654321fedcba" alt="Client" class="testimonial-img">
-            <div>
-              <h4 class="testimonial-name">Jane Smith</h4>
-              <div class="testimonial-rating">★★★★★</div>
-            </div>
-          </div>
-        </div>
-        <div class="testimonial-slide">
-          <p class="testimonial-quote">"Very responsive and professional. The work was completed on time and with great attention to detail."</p>
-          <div class="testimonial-profile">
-            <img src="https://fiverr-res.cloudinary.com/t_profile_original,q_auto,f_auto/attachments/profile/photo/abcdef1234567890" alt="Client" class="testimonial-img">
-            <div>
-              <h4 class="testimonial-name">Mike Johnson</h4>
-              <div class="testimonial-rating">★★★★★</div>
-            </div>
-          </div>
-        </div>
-        <button class="carousel-arrow left" aria-label="Previous testimonial">←</button>
-        <button class="carousel-arrow right" aria-label="Next testimonial">→</button>
-        <div class="carousel-indicators">
-          <span class="indicator active"></span>
-          <span class="indicator"></span>
-          <span class="indicator"></span>
         </div>
       </div>
     </section>
-    <section class="certificates-section" id="certificates">
-      <h2 class="section-title">Certificates & Achievements</h2>
-      <div class="certificates-grid">
-        <div class="certificate-card">
-          <img src="https://placehold.co/600x400/007bff/ffffff?text=Google+Certified" alt="Google Certification" class="certificate-img">
-          <h3>Fundamentals of Digital Marketing</h3>
-          <p>Google</p>
-          <span class="certificate-date">2024</span>
-        </div>
-        <div class="certificate-card">
-          <img src="https://placehold.co/600x400/00c6ff/ffffff?text=HackTheBox" alt="HackTheBox Certification" class="certificate-img">
-          <h3>Cybersecurity Essentials</h3>
-          <p>HackTheBox</p>
-          <span class="certificate-date">2024</span>
-        </div>
-        <div class="certificate-card">
-          <img src="https://placehold.co/600x400/0056b3/ffffff?text=Python+Programming" alt="Python Programming" class="certificate-img">
-          <h3>Python Programming</h3>
-          <p>EDGE</p>
-          <span class="certificate-date">2025</span>
-        </div>
-        <div class="certificate-card">
-          <img src="https://placehold.co/600x400/0056b3/ffffff?text=Graphic+Design" alt="Graphic Design" class="certificate-img">
-          <h3>Graphic Design</h3>
-          <p>Fiverr</p>
-          <span class="certificate-date">2020</span>
-        </div>
-        <div class="certificate-card">
-          <img src="https://placehold.co/600x400/0056b3/ffffff?text=English" alt="English" class="certificate-img">
-          <h3>Conversation English </h3>
-          <p>Fiverr</p>
-          <span class="certificate-date">2024</span>
-        </div>
-        <div class="certificate-card">
-          <img src="https://placehold.co/600x400/0056b3/ffffff?text=Adobe" alt="Adobe" class="certificate-img">
-          <h3>Adobe</h3>
-          <p>Fiverr</p>
-          <span class="certificate-date">2021</span>
-        </div>
-        
-      </div>
-    </section>
-    <!-- Blog Section -->
-    <section id="blog" class="blog-section section-transition" data-aos="fade-up">
+
+    <section class="section" id="about">
       <div class="container">
-        <h2 class="section-heading" data-aos="fade-down">Latest Articles</h2>
-        <div class="blog-grid">
-          <article class="blog-card" data-aos="fade-right" data-aos-delay="100">
-            
-            <div class="blog-content">
-              <h3>Article Title 1</h3>
-              <p>Brief description of the article content...</p>
-              <a href="#" class="read-more">Read More</a>
+        <div class="section-heading">
+          <div class="eyebrow">About me</div>
+          <h2>Creative work backed by strategy and execution.</h2>
+          <p>I combine storytelling, design, video, and technical thinking to create work that looks premium and performs for real business goals.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="services">
+      <div class="container">
+        <div class="section-heading">
+          <div class="eyebrow">Services</div>
+          <h2>What I do best</h2>
+        </div>
+        <div class="services-grid">
+          <article class="service-card">
+            <div class="service-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M10 9l5 3-5 3V9z"></path></svg>
+            </div>
+            <h3>Video Editing</h3>
+            <p>Short-form and long-form edits optimized for attention and conversion.</p>
+            <ul>
+              <li>Ads</li>
+              <li>Reels</li>
+              <li>Explainers</li>
+            </ul>
+          </article>
+
+          <article class="service-card">
+            <div class="service-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"></path></svg>
+            </div>
+            <h3>2D / 3D Animation</h3>
+            <p>Motion graphics and stylized animation for brands and campaigns.</p>
+            <ul>
+              <li>Logo</li>
+              <li>Intro</li>
+              <li>Explainer</li>
+            </ul>
+          </article>
+
+          <article class="service-card">
+            <div class="service-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 9h8M8 13h4M5 18h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2z"></path></svg>
+            </div>
+            <h3>UI / Design</h3>
+            <p>Modern landing pages and visual assets with a clean business-first aesthetic.</p>
+            <ul>
+              <li>Landing</li>
+              <li>Brand</li>
+              <li>Web</li>
+            </ul>
+          </article>
+
+          <article class="service-card">
+            <div class="service-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 1 1 8 0v3"></path></svg>
+            </div>
+            <h3>Cybersecurity</h3>
+            <p>Security-focused digital systems, assessments, and practical protection.</p>
+            <ul>
+              <li>Security</li>
+              <li>Testing</li>
+              <li>Audit</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="portfolio">
+      <div class="container">
+        <div class="section-heading">
+          <div class="eyebrow">Portfolio</div>
+          <h2>Selected work</h2>
+        </div>
+
+        <div class="portfolio-grid" id="portfolioGrid">
+          <article class="portfolio-card">
+            <div class="portfolio-thumb">
+              <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=80" alt="Brand campaign thumbnail">
+            </div>
+            <div class="portfolio-body">
+              <span class="portfolio-tag">Brand Campaign</span>
+              <h3>Launch Promo Video</h3>
+              <p>High-energy product campaign with sharp edits, motion graphics, and conversion-focused storytelling.</p>
             </div>
           </article>
-          <article class="blog-card" data-aos="fade-right" data-aos-delay="200">
-            
-            <div class="blog-content">
-              <h3>Article Title 2</h3>
-              <p>Brief description of the article content...</p>
-              <a href="#" class="read-more">Read More</a>
+
+          <article class="portfolio-card">
+            <div class="portfolio-thumb">
+              <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80" alt="Business growth project thumbnail">
+            </div>
+            <div class="portfolio-body">
+              <span class="portfolio-tag">Business</span>
+              <h3>Growth Marketing Reel</h3>
+              <p>Short-form edit built for social reach and strong audience recall.</p>
             </div>
           </article>
-          <article class="blog-card" data-aos="fade-right" data-aos-delay="300">
-            
-            <div class="blog-content">
-              <h3>Article Title 3</h3>
-              <p>Brief description of the article content...</p>
-              <a href="#" class="read-more">Read More</a>
+
+          <article class="portfolio-card">
+            <div class="portfolio-thumb">
+              <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80" alt="Startup website design thumbnail">
+            </div>
+            <div class="portfolio-body">
+              <span class="portfolio-tag">Web Design</span>
+              <h3>Startup Landing Page</h3>
+              <p>Clean interface design and marketing structure to help a new brand launch with confidence.</p>
+            </div>
+          </article>
+
+          <article class="portfolio-card">
+            <div class="portfolio-thumb">
+              <div class="fallback-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"></path></svg>
+              </div>
+            </div>
+            <div class="portfolio-body">
+              <span class="portfolio-tag">Motion</span>
+              <h3>Logo Intro Sequence</h3>
+              <p>Animated brand storytelling that brings identity and motion together in a polished opening.</p>
+            </div>
+          </article>
+
+          <article class="portfolio-card">
+            <div class="portfolio-thumb">
+              <div class="fallback-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M10 9l5 3-5 3V9z"></path></svg>
+              </div>
+            </div>
+            <div class="portfolio-body">
+              <span class="portfolio-tag">Video</span>
+              <h3>Product Teaser</h3>
+              <p>Fast-paced edited product teaser designed to introduce the offer with premium pacing and hooks.</p>
+            </div>
+          </article>
+
+          <article class="portfolio-card">
+            <div class="portfolio-thumb">
+              <div class="fallback-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 1 1 8 0v3"></path></svg>
+              </div>
+            </div>
+            <div class="portfolio-body">
+              <span class="portfolio-tag">Security</span>
+              <h3>Web Security Audit</h3>
+              <p>Security orientation and digital protection planning created for more resilient online operations.</p>
+            </div>
+          </article>
+
+          <article class="portfolio-card">
+            <div class="portfolio-thumb">
+              <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80" alt="Team meeting visual thumbnail">
+            </div>
+            <div class="portfolio-body">
+              <span class="portfolio-tag">Presentation</span>
+              <h3>Business Presentation</h3>
+              <p>A polished pitch structure and visual flow designed for clearer communication and investor trust.</p>
+            </div>
+          </article>
+
+          <article class="portfolio-card">
+            <div class="portfolio-thumb">
+              <div class="fallback-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M8 9h8M8 13h4M5 18h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H5a2 2 0 0 0 2 2v8a2 2 0 0 0 2 2z"></path></svg>
+              </div>
+            </div>
+            <div class="portfolio-body">
+              <span class="portfolio-tag">Branding</span>
+              <h3>Social Kit</h3>
+              <p>Reusable branded assets designed to keep content consistent and visually premium across channels.</p>
+            </div>
+          </article>
+
+          <article class="portfolio-card">
+            <div class="portfolio-thumb">
+              <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80" alt="Creative portfolio project thumbnail">
+            </div>
+            <div class="portfolio-body">
+              <span class="portfolio-tag">Creative</span>
+              <h3>Creative Studio Showcase</h3>
+              <p>An editorial-style project presentation designed to communicate capability with clarity and style.</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="portfolio-controls">
+          <button class="btn view-all-btn" id="viewAllBtn" type="button" aria-expanded="false">View all</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="reviews">
+      <div class="container">
+        <div class="section-heading">
+          <div class="eyebrow">Reviews</div>
+          <h2>Clients love the process</h2>
+        </div>
+
+        <div class="reviews-grid">
+          <article class="review-card">
+            <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+            <blockquote>
+              “Rafsan delivered a polished edit that looked premium and matched the brand instantly. Communication was smooth and the final result exceeded our expectations.”
+            </blockquote>
+            <div class="reviewer">
+              <strong>Mahin R.</strong>
+              <span>Brand Founder</span>
+            </div>
+          </article>
+
+          <article class="review-card">
+            <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+            <blockquote>
+              “Very professional, highly creative, and extremely responsive. The animation quality was clear, clean, and on-brand from start to finish.”
+            </blockquote>
+            <div class="reviewer">
+              <strong>Nasim K.</strong>
+              <span>Startup Founder</span>
+            </div>
+          </article>
+
+          <article class="review-card">
+            <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
+            <blockquote>
+              “The project was delivered with care, precision, and strong creative instincts. I would definitely work with Rafsan again for future campaigns.”
+            </blockquote>
+            <div class="reviewer">
+              <strong>Shakil A.</strong>
+              <span>Marketing Lead</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="certificates">
+      <div class="container">
+        <div class="section-heading">
+          <div class="eyebrow">Certificates</div>
+          <h2>Recognitions and learning</h2>
+        </div>
+
+        <div class="certificates-grid">
+          <article class="cert-card">
+            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80" alt="Cybersecurity certification">
+            <div class="cert-content">
+              <h3>Cybersecurity Practice</h3>
+              <p>Security fundamentals and applied protection work</p>
+            </div>
+          </article>
+
+          <article class="cert-card">
+            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80" alt="Creative design certification">
+            <div class="cert-content">
+              <h3>Creative & Visual Design</h3>
+              <p>Design thinking, brand communication, and storytelling</p>
+            </div>
+          </article>
+
+          <article class="cert-card">
+            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80" alt="Digital portfolio award or learning certificate">
+            <div class="cert-content">
+              <h3>Digital Strategy</h3>
+              <p>Business communication and growth-focused creative systems</p>
             </div>
           </article>
         </div>
       </div>
     </section>
   </main>
+
   <footer>
-    <p>&copy; 2024 MD Sahad Hossain (Rafsan). All rights reserved.</p>
+    <div class="container footer-inner">
+      <div>© 2026 MD Sahad Hossain (Rafsan)</div>
+      <div class="footer-links">
+        <a href="index.html">Company Site</a>
+        <a href="#portfolio">Portfolio</a>
+        <a href="#reviews">Reviews</a>
+        <a href="#certificates">Certificates</a>
+      </div>
+    </div>
   </footer>
-  <script src="js/portfolio.js"></script>
-  <button id="scrollToTopBtn" aria-label="Scroll to top">&#8679;</button>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+
   <script>
-    if (typeof AOS !== 'undefined') {
-      AOS.init({
-        duration: 800,
-        once: true
-      });
-    }
+    const navToggle = document.getElementById('nav-toggle');
+    const navMenu = document.getElementById('nav-menu');
 
-    const searchInput = document.getElementById('search-input');
-    const searchResults = document.getElementById('search-results');
-
-    if (searchInput && searchResults) {
-    searchInput.addEventListener('input', (e) => {
-      const query = e.target.value.toLowerCase();
-      if (query.length < 2) {
-        searchResults.style.display = 'none';
-        return;
-      }
-
-      const items = document.querySelectorAll('.portfolio-item');
-      const matches = Array.from(items).filter(item => {
-        const title = item.querySelector('h3').textContent.toLowerCase();
-        const description = item.querySelector('p').textContent.toLowerCase();
-        return title.includes(query) || description.includes(query);
-      });
-
-      if (matches.length > 0) {
-        searchResults.innerHTML = matches.map(item => `
-          <div class="search-result-item">
-            <h4>${item.querySelector('h3').textContent}</h4>
-            <p>${item.querySelector('p').textContent}</p>
-          </div>
-        `).join('');
-        searchResults.style.display = 'block';
-      } else {
-        searchResults.style.display = 'none';
-      }
-    });
-    }
-
-    // Lazy loading for images
-    const lazyImages = document.querySelectorAll('.lazy-image');
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const img = entry.target;
-          img.src = img.dataset.src;
-          img.classList.add('loaded');
-          observer.unobserve(img);
-        }
-      });
+    navToggle.addEventListener('click', () => {
+      const isOpen = navMenu.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', String(isOpen));
     });
 
-    lazyImages.forEach(img => imageObserver.observe(img));
+    const portfolioGrid = document.getElementById('portfolioGrid');
+    const viewAllBtn = document.getElementById('viewAllBtn');
+    const cards = Array.from(document.querySelectorAll('.portfolio-card'));
+    const initialVisible = 6;
 
-    // SHOW LIMITED PORTFOLIO + VIEW ALL BUTTON
-    (function(){
-      const MAX_VISIBLE = 4; // number of projects to show by default
-      const grid = document.querySelector('.portfolio-grid');
-      if (!grid) return;
-      const cards = Array.from(grid.querySelectorAll('.portfolio-card'));
-      if (cards.length <= MAX_VISIBLE) {
-        // hide the view-all button if not needed
-        const ctrl = document.getElementById('viewAllBtn');
-        if (ctrl) ctrl.style.display = 'none';
-        return;
-      }
-
-      // Initially hide extras
-      cards.forEach((card, i) => {
-        card.dataset.index = i;
-        if (i >= MAX_VISIBLE) {
+    const setVisibleCards = () => {
+      cards.forEach((card, index) => {
+        if (index < initialVisible) {
+          card.classList.remove('hidden');
+        } else {
           card.classList.add('hidden');
-          card.setAttribute('aria-hidden','true');
-        } else {
-          card.setAttribute('aria-hidden','false');
         }
       });
+    };
 
-      const btn = document.getElementById('viewAllBtn');
-      if (!btn) return;
-      btn.addEventListener('click', () => {
-        const expanded = btn.getAttribute('aria-expanded') === 'true';
+    setVisibleCards();
+
+    viewAllBtn.addEventListener('click', () => {
+      const expanded = viewAllBtn.getAttribute('aria-expanded') === 'true';
+      cards.forEach((card, index) => {
         if (expanded) {
-          // collapse
-          cards.forEach((card, i) => {
-            if (i >= MAX_VISIBLE) {
-              card.classList.add('hidden');
-              card.setAttribute('aria-hidden','true');
-            }
-          });
-          btn.setAttribute('aria-expanded','false');
-          btn.textContent = 'View all projects';
-          // re-run AOS to refresh animated items
-          if (window.AOS && typeof AOS.refreshHard === 'function') AOS.refreshHard();
-          else if (window.AOS && typeof AOS.refresh === 'function') AOS.refresh();
-          // move focus back to the first portfolio card for accessibility
-          const first = cards[0]; if (first) first.querySelector('a,button')?.focus();
+          if (index >= initialVisible) card.classList.add('hidden');
         } else {
-          // expand
-          cards.forEach((card, i) => {
-            if (i >= MAX_VISIBLE) {
-              card.classList.remove('hidden');
-              card.setAttribute('aria-hidden','false');
-              // trigger small entrance animation
-              card.style.transitionDelay = (i - MAX_VISIBLE) * 40 + 'ms';
-            }
-          });
-          btn.setAttribute('aria-expanded','true');
-          btn.textContent = 'Show less';
-          if (window.AOS && typeof AOS.refreshHard === 'function') AOS.refreshHard();
-          else if (window.AOS && typeof AOS.refresh === 'function') AOS.refresh();
+          if (index >= initialVisible) card.classList.remove('hidden');
         }
       });
 
-    })();
+      viewAllBtn.setAttribute('aria-expanded', String(!expanded));
+      viewAllBtn.textContent = expanded ? 'View all' : 'View less';
+    });
 
+    if (cards.length <= initialVisible) {
+      viewAllBtn.style.display = 'none';
+    }
   </script>
 </body>
 </html>

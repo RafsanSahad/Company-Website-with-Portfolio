@@ -207,6 +207,37 @@ window.SITE = {
     }
   ],
 
+  reviewExamples: [
+    {
+      demo: true,
+      name: "Nabil Chowdhury",
+      role: "Illustrative video project",
+      quote: "The edit gave our story a clear rhythm. The little details in the pacing, sound, and final polish made the whole piece feel thoughtfully put together.",
+      rating: 5
+    },
+    {
+      demo: true,
+      name: "Mira Rahman",
+      role: "Illustrative animation project",
+      quote: "Our idea became a charming animation with real personality. Every movement felt intentional, and the final result was a joy to watch.",
+      rating: 5
+    },
+    {
+      demo: true,
+      name: "Elias Karim",
+      role: "Illustrative software project",
+      quote: "Clear explanations, a careful approach, and a handoff that was easy to follow. It felt like a collaboration from the first conversation to the final delivery.",
+      rating: 5
+    },
+    {
+      demo: true,
+      name: "Saira Malik",
+      role: "Illustrative design project",
+      quote: "The visual direction captured the feeling we had in mind. The work was considered, expressive, and full of the small touches that make a design memorable.",
+      rating: 5
+    }
+  ],
+
   certificates: [
     {
       title: "Fundamentals of Digital Marketing",

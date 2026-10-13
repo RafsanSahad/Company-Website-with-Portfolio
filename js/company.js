@@ -461,28 +461,66 @@
     var grid = document.getElementById("reviews-grid");
     var empty = document.getElementById("reviews-empty");
     var source = document.getElementById("reviews-source");
-    if (!section || !grid || !empty || !source) return;
+    var carousel = document.getElementById("review-carousel");
+    var controls = document.getElementById("review-carousel-controls");
+    var pauseButton = document.getElementById("review-pause");
+    var shuffleButton = document.getElementById("review-shuffle");
+    var position = document.getElementById("review-position");
+    var announcement = document.getElementById("review-announcement");
+    var demoNote = document.getElementById("reviews-demo-note");
+    var intro = document.getElementById("reviews-intro-copy");
+    if (!section || !grid || !empty || !source || !carousel) return;
 
     function isPublishedReview(review) {
-      return isReal(review) && typeof review.name === "string" && review.name.trim() && typeof review.quote === "string" && review.quote.trim();
+      return isReal(review) && !review.demo && typeof review.name === "string" && review.name.trim() && typeof review.quote === "string" && review.quote.trim();
     }
 
     var reviews = (SITE.fiverrReviews || []).filter(isPublishedReview);
     if (!reviews.length) reviews = (SITE.testimonials || []).filter(isPublishedReview);
+    var isDemo = reviews.length === 0;
+    if (isDemo) {
+      reviews = (SITE.reviewExamples || []).filter(function (review) {
+        return isReal(review) && review.demo === true && typeof review.name === "string" && review.name.trim() && typeof review.quote === "string" && review.quote.trim();
+      });
+    }
     section.querySelectorAll("[data-review-profile]").forEach(function (link) {
       if (SITE.links.fiverr) link.href = SITE.links.fiverr;
     });
     grid.replaceChildren();
-    grid.hidden = reviews.length === 0;
+    carousel.hidden = reviews.length === 0;
     empty.hidden = reviews.length > 0;
     source.hidden = reviews.length === 0;
+    demoNote.hidden = !isDemo || reviews.length === 0;
+    controls.hidden = reviews.length < 2;
+    if (!reviews.length) return;
+    if (isDemo) {
+      intro.textContent = "A preview of the review experience, with fictional examples that shuffle at random. For authentic client feedback, visit our public Fiverr profile.";
+      carousel.setAttribute("aria-label", "Illustrative review examples");
+    }
 
     reviews.forEach(function (review) {
       var card = el("figure", "client-review-card");
+      card.setAttribute("role", "group");
+      card.setAttribute("aria-roledescription", "slide");
+      card.setAttribute("aria-hidden", "true");
+      card.inert = true;
+      if (isDemo) card.appendChild(el("p", "review-example-label", "Illustrative example — not a client testimonial"));
       var rating = Number(review.rating);
       if (typeof review.rating === "number" && Number.isFinite(rating) && rating >= 1 && rating <= 5) {
-        var score = el("p", "client-review-rating", rating + " / 5");
-        score.setAttribute("aria-label", "Rated " + rating + " out of 5");
+        var score = el("p", "client-review-rating");
+        var stars = el("span", "review-stars");
+        stars.setAttribute("aria-hidden", "true");
+        stars.style.setProperty("--rating-fill", rating / 5 * 100 + "%");
+        var starSvg = '<svg viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9Z"/></svg>';
+        var outline = el("span", "review-stars-outline");
+        outline.innerHTML = starSvg.repeat(5);
+        var filled = el("span", "review-stars-filled");
+        filled.innerHTML = starSvg.repeat(5);
+        stars.appendChild(outline);
+        stars.appendChild(filled);
+        score.appendChild(stars);
+        score.appendChild(el("span", "", rating + " / 5"));
+        score.setAttribute("aria-label", (isDemo ? "Example rating " : "Rated ") + rating + " out of 5");
         card.appendChild(score);
       }
       card.appendChild(el("blockquote", "client-review-quote", review.quote.trim()));
@@ -497,6 +535,106 @@
       card.appendChild(author);
       grid.appendChild(card);
     });
+
+    var cards = Array.prototype.slice.call(grid.children);
+    var current = -1;
+    var bag = [];
+    var timer;
+    var motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    var paused = motion.matches;
+    var hovered = false;
+    var focused = false;
+    var inViewport = false;
+
+    function nextIndex() {
+      if (!bag.length) {
+        bag = reviews.map(function (_, index) { return index; });
+        for (var index = bag.length - 1; index > 0; index--) {
+          var randomIndex = Math.floor(Math.random() * (index + 1));
+          var previous = bag[index];
+          bag[index] = bag[randomIndex];
+          bag[randomIndex] = previous;
+        }
+        if (bag.length > 1 && bag[0] === current) {
+          var first = bag[0];
+          bag[0] = bag[bag.length - 1];
+          bag[bag.length - 1] = first;
+        }
+      }
+      return bag.shift();
+    }
+
+    function schedule() {
+      window.clearTimeout(timer);
+      if (reviews.length > 1 && !paused && !hovered && !focused && inViewport && !document.hidden) {
+        timer = window.setTimeout(function () {
+          showNext(false);
+        }, 7000);
+      }
+    }
+
+    function showNext(manual) {
+      current = nextIndex();
+      cards.forEach(function (card, index) {
+        var active = index === current;
+        card.classList.toggle("is-active", active);
+        card.setAttribute("aria-hidden", String(!active));
+        card.setAttribute("aria-label", (isDemo ? "Example " : "Review ") + (index + 1) + " of " + cards.length);
+        card.inert = !active;
+      });
+      position.textContent = (isDemo ? "Example " : "Review ") + (current + 1) + " / " + reviews.length;
+      if (manual) announcement.textContent = (isDemo ? "Illustrative example: " : "Review by ") + reviews[current].name + ". " + position.textContent;
+      schedule();
+    }
+
+    function updatePause() {
+      pauseButton.textContent = paused ? "Resume rotation" : "Pause rotation";
+      schedule();
+    }
+
+    pauseButton.addEventListener("click", function () {
+      paused = !paused;
+      updatePause();
+    });
+    shuffleButton.addEventListener("click", function () { showNext(true); });
+    carousel.addEventListener("mouseenter", function () { hovered = true; schedule(); });
+    carousel.addEventListener("mouseleave", function () { hovered = false; schedule(); });
+    carousel.addEventListener("focusin", function () { focused = true; schedule(); });
+    carousel.addEventListener("focusout", function (event) {
+      focused = carousel.contains(event.relatedTarget);
+      schedule();
+    });
+    document.addEventListener("visibilitychange", schedule);
+    motion.addEventListener("change", function () {
+      if (motion.matches) {
+        paused = true;
+        updatePause();
+      }
+    });
+    if ("IntersectionObserver" in window) {
+      var observer = new IntersectionObserver(function (entries) {
+        inViewport = entries[0].isIntersecting;
+        schedule();
+      }, { threshold: 0.15 });
+      observer.observe(carousel);
+    } else {
+      inViewport = true;
+    }
+    showNext(false);
+    updatePause();
+  }
+
+  function initFloatingContact() {
+    var link = document.getElementById("floating-contact");
+    var title = document.getElementById("contact-title");
+    if (link && title) {
+      link.addEventListener("click", function (event) {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        window.requestAnimationFrame(function () {
+          title.focus({ preventScroll: true });
+        });
+      });
+    }
   }
 
   function renderCertificates() {
@@ -768,6 +906,7 @@
     renderProcess();
     renderAbout();
     renderContact();
+    initFloatingContact();
     renderFooter();
     reveal();
   });

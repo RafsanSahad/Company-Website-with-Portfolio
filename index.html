@@ -136,11 +136,22 @@
         <div class="reviews-intro">
           <p class="eyebrow">The client perspective</p>
           <h2 id="reviews-title">Client reviews</h2>
-          <p class="section-intro">Good work is a collaboration. Explore client feedback on our public Fiverr profile, with selected testimonials shared here when available.</p>
+          <p class="section-intro" id="reviews-intro-copy">Good work is a collaboration. Explore client feedback on our public Fiverr profile, with selected testimonials shared here when available.</p>
           <a class="reviews-contact" href="#contact">Start a conversation <span aria-hidden="true">↗</span></a>
         </div>
         <div class="reviews-content">
-          <div class="client-reviews-grid" id="reviews-grid" hidden></div>
+          <p class="reviews-demo-note" id="reviews-demo-note" hidden>Illustrative examples: these names, quotes, and ratings are fictional, not actual client testimonials.</p>
+          <div class="review-carousel" id="review-carousel" role="region" aria-roledescription="carousel" aria-label="Client reviews" hidden>
+            <div class="client-reviews-grid" id="reviews-grid" aria-live="off"></div>
+            <div class="review-carousel-controls" id="review-carousel-controls">
+              <p class="review-position" id="review-position"></p>
+              <div class="review-carousel-actions">
+                <button type="button" class="btn btn-outline" id="review-pause" aria-controls="reviews-grid">Pause rotation</button>
+                <button type="button" class="btn btn-outline" id="review-shuffle" aria-controls="reviews-grid">Shuffle review <span aria-hidden="true">↝</span></button>
+              </div>
+            </div>
+            <p class="visually-hidden" id="review-announcement" role="status" aria-live="polite" aria-atomic="true"></p>
+          </div>
           <div class="reviews-empty" id="reviews-empty">
             <svg class="review-quote-mark" viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M7 27c0-11 5-17 13-19v5c-5 2-7 6-7 10h9v17H7V27Zm24 0c0-11 5-17 13-19v5c-5 2-7 6-7 10h9v17H31V27Z" stroke="currentColor" stroke-width="1.2"/></svg>
             <p class="eyebrow">Feedback, at the source</p>
@@ -227,7 +238,7 @@
     <section class="section" id="contact" aria-labelledby="contact-title">
       <div class="wrap contact-layout">
         <div>
-          <h2 id="contact-title">Contact</h2>
+          <h2 id="contact-title" tabindex="-1">Contact</h2>
           <p class="section-intro">Write with a short brief. We reply from the studio inbox.</p>
           <p><a class="mailto" id="contact-email" href="mailto:rafsan.official@rafsanlabs.top">rafsan.official@rafsanlabs.top</a></p>
           <form class="contact-form" id="contact-form" novalidate>
@@ -289,6 +300,11 @@
       <p><a href="portfolio.html">Visit personal portfolio</a></p>
     </div>
   </footer>
+
+  <a class="floating-contact" id="floating-contact" href="#contact" aria-label="Contact Rafsan Labs">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 11.5a8 8 0 0 1-8 8H5l-3 2v-10a9 9 0 0 1 18 0Z"/><path d="M7 11h.01M11 11h.01M15 11h.01"/></svg>
+    <span class="floating-contact-label" aria-hidden="true">Let's talk</span>
+  </a>
 
   <div class="modal" id="project-modal" hidden>
     <div class="modal-backdrop" data-close-modal></div>

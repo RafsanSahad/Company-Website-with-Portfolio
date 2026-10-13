@@ -51,7 +51,11 @@ PDFs open in an embedded viewer in the project modal. PPTX files get a download 
 
 The company homepage's Client reviews section displays real entries from `SITE.testimonials`, or prefers `SITE.fiverrReviews` when that array contains published reviews. Replace the placeholder entry with an authentic `name` and `quote`, remove `placeholder: true`, and optionally supply `role` and a `rating` between 1 and 5. Only include feedback you have permission to publish. Blank and placeholder reviews are not rendered, and no rating is assumed when one is missing.
 
-Until real quotes are supplied, the section displays a styled link to the public Fiverr profile instead of invented testimonials. The profile URL comes from `SITE.links.fiverr`. This is a display-only section; it does not scrape reviews or collect visitor submissions.
+The review carousel selects a random starting review and shuffles through every entry before repeating, avoiding back-to-back duplicates. Multiple reviews rotate every seven seconds while the carousel is on screen. Rotation pauses on hover, keyboard focus, or a hidden browser tab; visitors can pause/resume it or manually shuffle. Reduced-motion preferences disable automatic rotation by default. Single reviews do not show rotation controls.
+
+`SITE.reviewExamples` contains fictional five-star examples requested for the carousel preview. Each example has `demo: true`; both the section and each slide visibly identify them as illustrative, not actual client feedback. Real published reviews automatically take priority and replace the examples. To show only the Fiverr fallback until authentic reviews are ready, set `reviewExamples: []`. Do not remove the example labels or present fictional reviews as genuine.
+
+The profile URL comes from `SITE.links.fiverr`. This is a display-only section; it does not scrape reviews or collect visitor submissions. The floating chat icon at the bottom right links to the existing Contact section and supports keyboard navigation.
 
 ### Add a certificate
 
